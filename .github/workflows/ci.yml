@@ -13,7 +13,7 @@ jobs:
       - name: Install python and hugo
         run:  apk add python3 hugo
       - name: generates content
-        run:  python generate.py
+        run:  python3 generate.py
       - name: generate site
         run: hugo -s site
       - name: Pushes to another repository

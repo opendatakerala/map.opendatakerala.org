@@ -16,6 +16,15 @@ def csvAsSequence(filename):
 def get_district(row):
     return ' '.join(row['districtLabel'].split(' ')[:-1])
 
+def get_lsg(row):
+    return row['len']
+
+def sluggify(name):
+    return name.lower().replace(" ", "-")
+
+def get_slug(row):
+    return sluggify(get_district(row) + "/" + get_lsg(row))
+
 records = csvAsSequence(DATA_FILE)
 
 # We need a dictionary to group LSGs to districts for select button
@@ -32,21 +41,22 @@ for row in records:
     # Add LSG to district group
     if district not in menu_items:
         menu_items[district] = []
+    menu_items[district].append(row)
     
     # Write LSG details to hugo content
     district_dir = Path(HUGO_ROOT_DIR, "content", district)
     Path(district_dir).mkdir(parents=True, exist_ok=True)
 
-    pagefilename = Path(district_dir, row['len'] + ".md")
+    pagefilename = Path(district_dir, get_lsg(row) + ".md")
     with open(pagefilename, 'w') as page:
         json.dump(row, page)
 
-select_text = '<select name="lsg">'
+select_text = '<select name="lsg" id="lsg-select">'
 for district in menu_items:
     # each district is an optgroup
     select_text += '<optgroup label="{0}">'.format(district)
     for lsg in menu_items[district]:
-        select_text += '<option value="{0}">{1}</option>'.format(district + "/" + lsg['len'], lsg['len'])
+        select_text += '<option value="/{0}/">{1}</option>'.format(get_slug(lsg), get_lsg(lsg))
     select_text += '</optgroup>'
 
 select_text += '</select>'

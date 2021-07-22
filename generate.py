@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 DATA_FILE = "data/lsgkerala.csv"
-TARGET_DIR = "site/content"
+HUGO_ROOT_DIR = "site"
 
 
 def csvAsSequence(filename):
@@ -18,7 +18,9 @@ def get_district(row):
 
 records = csvAsSequence(DATA_FILE)
 
-rowstoread = 0
+# We need a dictionary to group LSGs to districts for select button
+menu_items = {}
+
 for row in records:
     # headers are
     # qid,len,lml,districtLabel,mldistrictLabel,enarticle,mlarticle,LGDcode,LSGcode,wards
@@ -26,12 +28,28 @@ for row in records:
     row['title'] = f"{row['len']} | {row['lml']} | {row['mldistrictLabel']} | {row['districtLabel']}" 
 
     district = get_district(row)
-    district_dir = TARGET_DIR + "/" + district
+    
+    # Add LSG to district group
+    if district not in menu_items:
+        menu_items[district] = []
+    
+    # Write LSG details to hugo content
+    district_dir = Path(HUGO_ROOT_DIR, "content", district)
     Path(district_dir).mkdir(parents=True, exist_ok=True)
 
-    pagefilename = district_dir + "/" + row['len'] + ".md"
+    pagefilename = Path(district_dir, row['len'] + ".md")
     with open(pagefilename, 'w') as page:
         json.dump(row, page)
-    rowstoread -= 1
-    if rowstoread == 0:
-        break
+
+select_text = '<select name="lsg">'
+for district in menu_items:
+    # each district is an optgroup
+    select_text += '<optgroup label="{0}">'.format(district)
+    for lsg in menu_items[district]:
+        select_text += '<option value="{0}">{1}</option>'.format(district + "/" + lsg['len'], lsg['len'])
+    select_text += '</optgroup>'
+
+select_text += '</select>'
+select_html_filename = Path(HUGO_ROOT_DIR, "themes", "antharangam", "layouts", "partials", "lsg-select.html")
+with open(select_html_filename, 'w') as select_partial:
+    select_partial.write(select_text)

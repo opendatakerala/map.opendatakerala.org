@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: alpine/latest
+    container: alpine
     steps:
       - uses: actions/checkout@v2
       - name: Install python and hugo

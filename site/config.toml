@@ -1,4 +1,4 @@
-baseURL = "http://example.org/"
+baseURL = "http://opendatakerala.org/lsg.opendatakerala.org/"
 languageCode = "en-us"
-title = "My New Hugo Site"
+title = "Map Kerala"
 theme = "antharangam"

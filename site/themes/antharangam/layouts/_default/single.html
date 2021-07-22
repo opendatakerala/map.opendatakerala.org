@@ -1,0 +1,104 @@
+{{ define "head" }}
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open Maps</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+<style>
+    header {
+        grid-area: header;
+    }
+
+    #lsgTitle {
+        grid-area: lsgtitle;
+    }
+
+    #search {
+        grid-area: search;
+    }
+
+    #map {
+        grid-area: map;
+        height: 70vh;
+    }
+
+    #display {
+        grid-area: display;
+    }
+
+    body {
+        display: grid;
+        grid-template-areas:
+            "header lsgtitle search"
+            "map    map      display"
+        ;
+    }
+</style>
+{{ end }}
+
+{{ define "main" }}
+<script>
+    const qid = "{{ .Params.qid }}";
+</script>
+<header>
+    <h1>Map Kerala</h1>
+</header>
+<div id="lsgTitle">
+    <h2>{{ .Params.len }}</h2>
+</div>
+<div id="search">
+    {{ partial "lsg-select.html" . }}
+</div>
+<div id="map"></div>
+<!-- Make sure you put this AFTER Leaflet's CSS -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+
+<script src="https://tyrasd.github.io/osmtogeojson/osmtogeojson.js"></script>
+
+<script src="../../india-boundaries.js"></script>
+
+<script>
+    var map = L.map('map', {
+        maxBounds: [[7.477, 78.234][13.5806, 74.2676]],
+        minZoom: 7,
+        maxBoundsViscosity: 0.9
+    }).setView([10.6103587, 76.0569874], 7);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    handle_india_boundaries(map);
+
+    const query = `[out:json] [timeout:500];
+                relation[wikidata=${qid}];
+                out geom;`
+
+    const params = new URLSearchParams();
+    params.append("data", query);
+
+    fetch("https://overpass-api.de/api/interpreter", {
+        method: "POST",
+        body: params,
+        cors: true,
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        },
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            console.log(data)
+            const geojson = osmtogeojson(data)
+            const newlayer = L.geoJSON(geojson, { color: "blue" }).addTo(map)
+            const location = newlayer.getBounds().getCenter()
+            map.flyTo(location, 12)
+        })
+        .catch((err) => console.error(err));
+</script>
+
+{{- .Content -}}
+{{ end }}

@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install python and hugo
-        run:  apk add python && apk add hugo
+        run:  apk add python3 hugo
       - name: generates content
         run:  python generate.py
       - name: generate site

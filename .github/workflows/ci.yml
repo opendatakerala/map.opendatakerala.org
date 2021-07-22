@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: alpine/latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install python and hugo
+        run:  apk add python && apk add hugo
+      - name: generates content
+        run:  python generate.py
+      - name: generate site
+        run: hugo -s site
+      - name: Pushes to another repository
+        id: push_directory
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source-directory: 'site/public'
+          destination-github-username: 'opendatakerala'
+          destination-repository-name: 'lsg.opendatakerala.org'
+          user-email: akshay@learnlearn.in
+          commit-message: See ORIGIN_COMMIT from $GITHUB_REF
+          target-branch: gh-pages
+      - name: Test get variable exported by push-to-another-repository
+        run: echo $DESTINATION_CLONED_DIRECTORY

@@ -7,33 +7,21 @@
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin="" />
 <style>
-    header {
-        grid-area: header;
+    #content {
+        display: flex;
+        flex-direction: column;
     }
-
-    #lsgTitle {
-        grid-area: lsgtitle;
+    #controls {
+        display: flex;
+        flex-direction: row;
+        flex: 0;
+        align-items: center;
+        justify-items: stretch;
+        justify-content: space-between;
     }
-
-    #search {
-        grid-area: search;
-    }
-
     #map {
-        grid-area: map;
-        height: 70vh;
-    }
-
-    #display {
-        grid-area: display;
-    }
-
-    body {
-        display: grid;
-        grid-template-areas:
-            "header lsgtitle search"
-            "map    map      display"
-        ;
+        min-height: 70vh;
+        flex: 1;
     }
 </style>
 {{ end }}
@@ -42,16 +30,20 @@
 <script>
     const qid = "{{ .Params.qid }}";
 </script>
-<header>
-    <h1>Map Kerala</h1>
-</header>
-<div id="lsgTitle">
-    <h2>{{ .Params.len }}</h2>
+<div id="content">
+    <div id="controls">
+        <header>
+            <h2>Map Kerala</h2>
+        </header>
+        <div id="lsgTitle">
+            <h1>{{ .Params.len }}</h1>
+        </div>
+        <div id="search">
+            {{ partial "lsg-select.html" . }}
+        </div>
+    </div>
+    <div id="map"></div>
 </div>
-<div id="search">
-    {{ partial "lsg-select.html" . }}
-</div>
-<div id="map"></div>
 <!-- Make sure you put this AFTER Leaflet's CSS -->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
     integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="

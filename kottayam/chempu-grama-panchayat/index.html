@@ -50,12 +50,14 @@
 </div>
 
 <script>
+    const lsgPrefix = "/lsg.opendatakerala.org"
+    const considerSubFolder = window.location.pathname.startsWith(lsgPrefix)
     const slug = window.location.pathname;
     const lsgselect = document.getElementById("lsg-select")
-    lsgselect.value = slug
+    lsgselect.value = considerSubFolder ? `/${slug.split('/').slice(2).join('/')}` : slug;
 
     lsgselect.addEventListener('change', e => {
-        window.location.pathname = e.target.value
+        window.location.pathname = considerSubFolder ? `${lsgPrefix}${e.target.value}` : e.target.value;
     })
 </script>
 
@@ -69,8 +71,9 @@
 <script src="../../india-boundaries.js"></script>
 
 <script>
+    var keralaBounds = [[7.477, 78.234][13.5806, 74.2676]]
     var map = L.map('map', {
-        maxBounds: [[7.477, 78.234][13.5806, 74.2676]],
+        maxBounds: keralaBounds,
         minZoom: 7,
         maxBoundsViscosity: 0.9
     }).setView([10.6103587, 76.0569874], 7);
@@ -103,6 +106,7 @@
             const newlayer = L.geoJSON(geojson, { color: "blue" }).addTo(map)
             const location = newlayer.getBounds().getCenter()
             map.flyTo(location, 12)
+            map.setMaxBounds(keralaBounds)
         })
         .catch((err) => console.error(err));
 </script>

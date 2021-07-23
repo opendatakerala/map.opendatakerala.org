@@ -1,4 +1,3 @@
 baseURL = "http://opendatakerala.org/lsg.opendatakerala.org/"
 languageCode = "en-us"
 title = "Map Kerala"
-theme = "antharangam"

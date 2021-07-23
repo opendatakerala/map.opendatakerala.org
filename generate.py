@@ -60,6 +60,6 @@ for district in menu_items:
     select_text += '</optgroup>'
 
 select_text += '</select>'
-select_html_filename = Path(HUGO_ROOT_DIR, "themes", "antharangam", "layouts", "partials", "lsg-select.html")
+select_html_filename = Path(HUGO_ROOT_DIR, "layouts", "partials", "lsg-select.html")
 with open(select_html_filename, 'w') as select_partial:
     select_partial.write(select_text)

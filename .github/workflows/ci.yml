@@ -24,7 +24,7 @@ jobs:
         with:
           source-directory: 'site/public'
           destination-github-username: 'opendatakerala'
-          destination-repository-name: 'lsg.opendatakerala.org'
+          destination-repository-name: 'map.opendatakerala.org'
           user-email: akshay@learnlearn.in
           commit-message: See ORIGIN_COMMIT from $GITHUB_REF
           target-branch: gh-pages

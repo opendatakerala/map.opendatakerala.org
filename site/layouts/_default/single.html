@@ -48,14 +48,12 @@
 </div>
 
 <script>
-    const lsgPrefix = "/lsg.opendatakerala.org"
-    const considerSubFolder = window.location.pathname.startsWith(lsgPrefix)
     const slug = window.location.pathname;
     const lsgselect = document.getElementById("lsg-select")
-    lsgselect.value = considerSubFolder ? `/${slug.split('/').slice(2).join('/')}` : slug;
+    lsgselect.value = slug;
 
     lsgselect.addEventListener('change', e => {
-        window.location.pathname = considerSubFolder ? `${lsgPrefix}${e.target.value}` : e.target.value;
+        window.location.pathname = e.target.value;
     })
 </script>
 

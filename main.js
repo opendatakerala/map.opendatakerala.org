@@ -18,7 +18,10 @@ lsgselect.value = slug;
 
 lsgselect.addEventListener("change", (e) => {
     const newLSGSelectedEvent = new CustomEvent("new-lsg-selected", {
-        detail: e.target.value,
+        detail: {
+            lsgCode: e.target.value,
+            lsgName: e.target.options[e.target.selectedIndex].innerHTML,
+        },
     });
     document.dispatchEvent(newLSGSelectedEvent);
 });
@@ -57,6 +60,7 @@ const loadNewQid = (qid) => {
             const geojson = osmtogeojson(data);
             currentGeoJson = geojson;
             downloadButton.disabled = false;
+            document.querySelector("#lsgTitle").textContent = `${currentLsg}`;
             const newlayer = L.geoJSON(geojson, { color: "blue" }).addTo(map);
             const location = newlayer.getBounds().getCenter();
             map.flyTo(location, 12);
@@ -70,7 +74,10 @@ loadNewQid(qid);
 
 document.addEventListener("new-lsg-selected", (e) => {
     downloadButton.disabled = true;
-    fetch(`${e.detail}index.json`)
+    document.querySelector(
+        "#lsgTitle"
+    ).textContent = `Going to ${e.detail.lsgName}...`;
+    fetch(`${e.detail.lsgCode}index.json`)
         .then((res) => res.json())
         .then((data) => {
             loadNewQid(data.qid);

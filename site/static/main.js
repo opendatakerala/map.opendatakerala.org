@@ -27,6 +27,7 @@ lsgselect.addEventListener("change", (e) => {
 });
 
 var currentGeoJson;
+var currentLayer;
 var currentLsg = document.querySelector("#lsgTitle").textContent.trim();
 const downloadButton = document.querySelector("#download");
 downloadButton.addEventListener("click", () => {
@@ -62,6 +63,7 @@ const loadNewQid = (qid) => {
             downloadButton.disabled = false;
             document.querySelector("#lsgTitle").textContent = `${currentLsg}`;
             const newlayer = L.geoJSON(geojson, { color: "blue" }).addTo(map);
+            currentLayer = newlayer;
             const location = newlayer.getBounds().getCenter();
             map.flyTo(location, 12);
             map.setMaxBounds(keralaBounds);
@@ -74,6 +76,7 @@ loadNewQid(qid);
 
 document.addEventListener("new-lsg-selected", (e) => {
     downloadButton.disabled = true;
+    map.removeLayer(currentLayer);
     document.querySelector(
         "#lsgTitle"
     ).textContent = `Going to ${e.detail.lsgName}...`;

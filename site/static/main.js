@@ -54,5 +54,6 @@ const qid = document.querySelector('#qid').textContent;
 loadNewQid(qid)
 
 document.addEventListener('new-lsg-selected', (e) => {
-    window.location.pathname = e.detail
+    fetch(`${e.detail}index.json`).then((res)=> res.json())
+    .then((data) => loadNewQid(data.qid))
 })

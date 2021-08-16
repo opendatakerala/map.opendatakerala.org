@@ -41,12 +41,16 @@
         <div id="lsgTitle">
             {{ .Params.len }}
         </div>
+        <button id="download" disabled>
+            Download
+        </button>
         <div id="search">
             {{ partial "lsg-select.html" . }}
         </div>
     </div>
     <div id="map"></div>
 </div>
+
 <div id="metadata">
     <div id="qid">
         {{ .Params.qid }}

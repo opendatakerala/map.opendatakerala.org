@@ -23,6 +23,19 @@ lsgselect.addEventListener("change", (e) => {
     document.dispatchEvent(newLSGSelectedEvent);
 });
 
+var currentGeoJson;
+var currentLsg = document.querySelector("#lsgTitle").textContent.trim();
+const downloadButton = document.querySelector("#download");
+downloadButton.addEventListener("click", () => {
+    const string = JSON.stringify(currentGeoJson);
+    const bytes = new TextEncoder().encode(string);
+    const blob = new Blob([bytes], { type: "application/json;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `${currentLsg}.geojson`;
+    a.click();
+});
+
 const loadNewQid = (qid) => {
     const query = `[out:json] [timeout:500];
             relation[wikidata=${qid}];
@@ -41,8 +54,9 @@ const loadNewQid = (qid) => {
     })
         .then((res) => res.json())
         .then((data) => {
-            console.log(data);
             const geojson = osmtogeojson(data);
+            currentGeoJson = geojson;
+            downloadButton.disabled = false;
             const newlayer = L.geoJSON(geojson, { color: "blue" }).addTo(map);
             const location = newlayer.getBounds().getCenter();
             map.flyTo(location, 12);
@@ -55,7 +69,11 @@ const qid = document.querySelector("#qid").textContent;
 loadNewQid(qid);
 
 document.addEventListener("new-lsg-selected", (e) => {
+    downloadButton.disabled = true;
     fetch(`${e.detail}index.json`)
         .then((res) => res.json())
-        .then((data) => loadNewQid(data.qid));
+        .then((data) => {
+            loadNewQid(data.qid);
+            currentLsg = data.len;
+        });
 });

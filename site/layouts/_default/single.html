@@ -24,6 +24,8 @@
     #map {
         min-height: 70vh;
         flex: 1;
+	marging: 10px;
+	padding: 10px;
     }
 
     #metadata {
@@ -33,22 +35,17 @@
 {{ end }}
 
 {{ define "main" }}
-<div id="content">
-    <div id="controls">
-        <header>
-            <h2>Map Kerala</h2>
-        </header>
+<div id="content" class="container m-5">
+    <div id="controls"  class="h1 mb-4 pb-4">
         <div id="lsgTitle">
             {{ .Params.len }}
         </div>
-        <button id="download" disabled>
+        <button id="download" class="btn btn-dark shadow ml-5" disabled>
             Download
         </button>
-        <div id="search">
-            {{ partial "lsg-select.html" . }}
-        </div>
+
     </div>
-    <div id="map"></div>
+    <div class="card shadow-lg" id="map"></div>
 </div>
 
 <div id="metadata">

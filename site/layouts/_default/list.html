@@ -1,7 +1,13 @@
 {{ define "main" }}
-      {{- .Content -}}
-      {{ range .Paginator.Pages }}
-          {{- partial "summary.html" . -}}
-      {{ end }}
-    {{- template "_internal/pagination.html" . -}}
+<div class="container d-flex flex-column">
+    <input class="form-control mr-sm-2 m-5" type="search" placeholder="Search" aria-label="Search">
+    {{- .Content -}}
+    <div class="d-flex flex-wrap justify-content-center">
+        {{ range .Paginator.Pages }}
+        {{- partial "summary.html" . -}}
+    {{ end }}
+    </div>
+  {{- template "_internal/pagination.html" . -}}
+</div>
+
 {{ end }}

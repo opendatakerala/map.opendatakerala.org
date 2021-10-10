@@ -1,6 +1,19 @@
 {{ define "main" }}
-    <div>Some contentmaybe</div>
-    <div>
-        {{ .Content }}
+<Section>
+<div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+    <div class="col-md-5 p-lg-5 mx-auto my-5">
+      <h1 class="display-4 font-weight-normal">Map Kerala</h1>
+      <p class="lead font-weight-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam laoreet nisi a velit tempus, sed imperdiet lorem feugiat. Aenean vestibulum cursus quam, tincidunt placerat purus tristique scelerisque.</p>
+      <a class="btn btn-outline-secondary" href="#">Know more</a>
     </div>
+    <div class="product-device shadow-sm d-none d-md-block"></div>
+    <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
+  </div>
+    <div style="display:flex;flex-wrap:wrap;">   
+        {{ .Content }}
+        {{ range .Site.Sections }}
+            <div class="card d-flex m-5"><a class="card-body" href="{{ .Permalink }}">{{ .Title }}</a></div>
+        {{ end }}
+    </div>
+</Section>
 {{ end }}

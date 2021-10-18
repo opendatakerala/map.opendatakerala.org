@@ -1,3 +1,4 @@
 site/content/
 site/public/
 site/layouts/partials/lsg-select.html
+site/static/data.json

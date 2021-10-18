@@ -81,3 +81,16 @@ select_text += '</select>'
 select_html_filename = Path(HUGO_ROOT_DIR, "layouts", "partials", "lsg-select.html")
 with open(select_html_filename, 'w') as select_partial:
     select_partial.write(select_text)
+
+static_json_filename = Path(HUGO_ROOT_DIR, "static", "data.json")
+fields_to_keep = ["len", "lml", "qid"]
+stripped_data = {
+    district: [
+        {
+            field: lsg[field]
+            for field in fields_to_keep
+        } for lsg in menu_items[district]
+    ] for district in menu_items
+}
+with open(static_json_filename, 'w') as static_json:
+    static_json.write(json.dumps(stripped_data, indent=4))

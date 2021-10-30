@@ -9,11 +9,16 @@
     <div class="product-device shadow-sm d-none d-md-block"></div>
     <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
   </div>
-    <div style="display:flex;flex-wrap:wrap;">   
+    <div>
         {{ .Content }}
-        {{ range .Site.Sections }}
-            <div class="card d-flex m-5"><a class="card-body" href="{{ .Permalink }}">{{ .Title }}</a></div>
+        <div class="d-flex flex-wrap row-cols-3">
+        {{ range .Site.Data.districts }}
+            <div class="card col">
+              <img src="{{ .thumb }}" class="card-img-top" alt="Representational image for {{ .name }}">
+              <a class="card-body" href="{{ .name | urlize }}">{{ .name }}</a>
+            </div>
         {{ end }}
+        </div>
     </div>
 </Section>
 {{ end }}

@@ -47,11 +47,13 @@
                         </a>
                     </li>
                 </ul>
+                {{ if not (eq .Layout "meta") }}
                 <div class="d-flex">
                     <div id="search">
                         {{ partial "lsg-select.html" . }}
                     </div>
                 </div>
+                {{ end }}
             </div>
         </div>
     </nav>

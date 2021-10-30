@@ -83,12 +83,25 @@
     
     <div class="d-flex justify-content-center" style="width:80%;">
 <div class="container d-flex flex-column">
-    <input class="form-control mr-sm-2 m-5" type="search" placeholder="Search" aria-label="Search"><div class="d-flex flex-wrap justify-content-center">
+    <input id="search-box" class="form-control mr-sm-2 m-5" type="search" placeholder="Search" aria-label="Search"><div class="d-flex flex-wrap justify-content-center">
         
     </div>
-
 </div>
-
+<script type="text/javascript">
+    const results = document.getElementsByClassName("search-result")
+    const onSearch = (search) => {
+        for (const item of results) {
+            if (item.innerHTML.includes(search)) {
+                item.style.display = "flex";
+            } else {
+                item.style.display = "none";
+            }
+        }
+    }
+    document.getElementById("search-box").addEventListener("input", (e) => {
+        onSearch(e.target.value)
+    })
+</script>
 
     </div>
     

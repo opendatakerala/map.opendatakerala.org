@@ -9,6 +9,6 @@
 {{ end }}
 <li class="nav-link active {{ if eq .p1 .p2 }} bg-dark {{ end }} rounded m-1 p-2">
     <a class="{{ if eq .p1 .p2 }} text-light {{ else }} text-dark  {{ end }} text-decoration-none "
-        href="{{ .p1.Permalink }}">{{ .p1.Title }}</a>
+        href="{{ .p1.Permalink }}">{{ .p1.Params.len | default .p1.Title }}</a>
 </li>
 {{ end }}

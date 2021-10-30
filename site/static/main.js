@@ -26,6 +26,7 @@ lsgselect.addEventListener("change", (e) => {
     document.dispatchEvent(newLSGSelectedEvent);
 });
 
+var currentConfiguration = "Boundaries";
 var currentGeoJson;
 var currentLayer;
 var currentLsg = document.querySelector("#lsgTitle").textContent.trim();
@@ -40,10 +41,24 @@ downloadButton.addEventListener("click", () => {
     a.click();
 });
 
+const QUERIES = {
+    "Roads": `"highway"`,
+    "Hospitals": `"amenity"="hospital"`
+}
+
+const getQuery = (qid, config) => {
+    if (config === "Boundaries")
+        return `[out:json] [timeout:500];
+                 relation[wikidata=${qid}];
+                 out geom;`;
+    return `[out:json][timeout:500];
+            (area["wikidata"="${qid}"];nwr(area)[${QUERIES[config]}];);
+            (._;>;);
+            out geom;`
+};
+
 const loadNewQid = (qid) => {
-    const query = `[out:json] [timeout:500];
-            relation[wikidata=${qid}];
-            out geom;`;
+    const query = getQuery(qid, currentConfiguration);
 
     const params = new URLSearchParams();
     params.append("data", query);
@@ -58,11 +73,14 @@ const loadNewQid = (qid) => {
     })
         .then((res) => res.json())
         .then((data) => {
+            console.log(data);
             const geojson = osmtogeojson(data);
+            console.log(geojson);
             currentGeoJson = geojson;
             downloadButton.disabled = false;
             document.querySelector("#lsgTitle").textContent = `${currentLsg}`;
             const newlayer = L.geoJSON(geojson, { color: "blue" }).addTo(map);
+            if (currentLayer) map.removeLayer(currentLayer);
             currentLayer = newlayer;
             const location = newlayer.getBounds().getCenter();
             map.flyTo(location, 12);
@@ -71,7 +89,7 @@ const loadNewQid = (qid) => {
         .catch((err) => console.error(err));
 };
 
-const qid = document.querySelector("#qid").textContent;
+const qid = document.querySelector("#qid").textContent.trim();
 loadNewQid(qid);
 
 document.addEventListener("new-lsg-selected", (e) => {
@@ -87,3 +105,10 @@ document.addEventListener("new-lsg-selected", (e) => {
             currentLsg = data.len;
         });
 });
+
+const reconfigure = (selection) => {
+    configureButton = document.getElementById("configuration");
+    configureButton.textContent = selection;
+    currentConfiguration = selection;
+    loadNewQid(qid);
+};

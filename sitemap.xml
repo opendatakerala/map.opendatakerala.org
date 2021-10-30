@@ -2,6 +2,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://map.opendatakerala.org/about/</loc>
+  </url><url>
     <loc>https://map.opendatakerala.org/thrissur/adat-grama-panchayat/</loc>
   </url><url>
     <loc>https://map.opendatakerala.org/kollam/adichanalloor-grama-panchayat/</loc>

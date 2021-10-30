@@ -7,6 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="https://map.opendatakerala.org/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>About</title>
+      <link>https://map.opendatakerala.org/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://map.opendatakerala.org/about/</guid>
+      <description>About An Open Data Kerala initiative.</description>
+    </item>
+    
+    <item>
       <title>Adat Grama Panchayat | അടാട്ട് ഗ്രാമ പഞ്ചായത്ത് | തൃശ്ശൂർ ജില്ല | Thrissur district</title>
       <link>https://map.opendatakerala.org/thrissur/adat-grama-panchayat/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

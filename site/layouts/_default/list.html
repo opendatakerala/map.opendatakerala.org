@@ -5,9 +5,9 @@
     <div class="d-flex flex-wrap justify-content-center">
         {{ range .Paginator.Pages }}
         {{- partial "summary.html" . -}}
-    {{ end }}
+        {{ end }}
     </div>
-  {{- template "_internal/pagination.html" . -}}
+    {{- template "_internal/pagination.html" . -}}
 </div>
 
 {{ end }}

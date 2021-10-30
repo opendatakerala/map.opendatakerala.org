@@ -26,6 +26,7 @@ lsgselect.addEventListener("change", (e) => {
     document.dispatchEvent(newLSGSelectedEvent);
 });
 
+var currentQid;
 var currentConfiguration = "Boundaries";
 var currentGeoJson;
 var currentLayer;
@@ -89,8 +90,8 @@ const loadNewQid = (qid) => {
         .catch((err) => console.error(err));
 };
 
-const qid = document.querySelector("#qid").textContent.trim();
-loadNewQid(qid);
+currentQid = document.querySelector("#qid").textContent.trim();
+loadNewQid(currentQid);
 
 document.addEventListener("new-lsg-selected", (e) => {
     downloadButton.disabled = true;
@@ -102,6 +103,7 @@ document.addEventListener("new-lsg-selected", (e) => {
         .then((res) => res.json())
         .then((data) => {
             loadNewQid(data.qid);
+            currentQid = data.qid;
             currentLsg = data.len;
         });
 });
@@ -110,5 +112,5 @@ const reconfigure = (selection) => {
     configureButton = document.getElementById("configuration");
     configureButton.textContent = selection;
     currentConfiguration = selection;
-    loadNewQid(qid);
+    loadNewQid(currentQid);
 };

@@ -37,14 +37,19 @@
             {{ .Params.len }}
         </div>
         <div class="dropdown d-flex">
-            <button class="btn btn-secondary dropdown-toggle" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false" id="configuration">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false" id="configuration">
                 Boundaries
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Boundaries')">Boundaries</a></li>
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Roads')">Roads</a></li>
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Hospitals')">Hospitals</a></li>
+                {{ range $group, $features := .Site.Data.features }}
+                <li>
+                    <h6 class="dropdown-header">{{ $group }}</h6>
+                </li>
+                {{ range $features }}
+                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('{{ . }}')">{{ . }}</a></li>
+                {{ end }}
+                {{ end }}
             </ul>
         </div>
         <button id="download" class="btn btn-dark shadow" disabled>

@@ -1,0 +1,17 @@
+Political:
+  - Boundaries
+  - Government Offices
+Emergency:
+  - Hospitals
+  - Power
+  - Police Stations
+  - Fire Stations
+Nature:
+  - Waterways/Riveres
+  - Ponds
+  - Farmlands
+Public Transport:
+  - Roads
+  - Rails
+  - Taxi
+  - Petrol Pumps

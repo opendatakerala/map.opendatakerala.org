@@ -1,6 +1,12 @@
 <div class="card m-3 search-result" style="width: 18rem;">
+    {{ $filepath := (print "static/img/" .Params.qid ".png" ) }}
+    {{ $url := (print "img/" .Params.qid ".png" ) }}
+    {{ if (fileExists $filepath) -}}
+    <img src="{{ $url | absURL }}" />
+    {{ else }}
     <img src="http://townplanning.kerala.gov.in/town/wp-content/uploads/2018/12/allapuzha.jpg" class="card-img-top"
         alt="..." loading="lazy">
+    {{- end }}
     <div class="card-body">
         <h5 class="card-title"><a href="{{ .Permalink }}">
                 {{ .Params.lml }}

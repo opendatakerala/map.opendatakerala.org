@@ -43,8 +43,18 @@ downloadButton.addEventListener("click", () => {
 });
 
 const QUERIES = {
+    "Government Offices": `"office"="government"`,
+    "Hospitals": `"amenity"="hospital"`,
+    "Power": `"power"`,
+    "Police Stations": `"amenity"="police"`,
+    "Fire Stations": `"amenity"="fire_station"`,
+    "Waterways/Rivers": `"waterway"`,
+    "Ponds": `"water"="pond"`,
+    "Farmlands": `"landuse"="farmland"`,
     "Roads": `"highway"`,
-    "Hospitals": `"amenity"="hospital"`
+    "Rails": `"railway"`,
+    "Taxi": `"amenity"="taxi"`,
+    "Petrol Pumps": `"amenity"="fuel"`,
 }
 
 const getQuery = (qid, config) => {

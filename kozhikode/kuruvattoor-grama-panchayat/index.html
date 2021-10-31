@@ -72,7 +72,7 @@
     
     <nav class="navbar navbar-expand-lg navbar-light bg-light" style="width: 100%;">
         <div class="container-fluid m-1">
-            <a class="navbar-brand" href="/">Map Kerala</a>
+            <a class="navbar-brand" href="/">Map Kerala <sub>Alpha</sub></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -88,24 +88,31 @@
 
 
 
-<li class="nav-link active  rounded m-1 p-2">
-    <a class=" text-dark   text-decoration-none "
-        href="https://map.opendatakerala.org/">Map Kerala</a>
+
+
+
+
+
+<li class="nav-link active rounded m-1 p-2">
+    <a class="text-dark text-decoration-none" href="https://map.opendatakerala.org/kozhikode/">
+        Kozhikode
+    </a>
 </li>
 
 
-<li class="nav-link active  rounded m-1 p-2">
-    <a class=" text-dark   text-decoration-none "
-        href="https://map.opendatakerala.org/kozhikode/">Kozhikode</a>
+
+
+
+<li class="nav-link active bg-dark rounded m-1 p-2">
+    <a class="text-light text-decoration-none" href="https://map.opendatakerala.org/kozhikode/kuruvattoor-grama-panchayat/">
+        Kuruvattoor Grama Panchayat
+    </a>
 </li>
 
 
-<li class="nav-link active  bg-dark  rounded m-1 p-2">
-    <a class=" text-light  text-decoration-none "
-        href="https://map.opendatakerala.org/kozhikode/kuruvattoor-grama-panchayat/">Kuruvattoor Grama Panchayat</a>
-</li>
 
 </ol>
+
 
                         </a>
                     </li>
@@ -128,14 +135,58 @@
             Kuruvattoor Grama Panchayat
         </div>
         <div class="dropdown d-flex">
-            <button class="btn btn-secondary dropdown-toggle" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false" id="configuration">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false" id="configuration">
                 Boundaries
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Boundaries')">Boundaries</a></li>
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Roads')">Roads</a></li>
+                
+                <li>
+                    <h6 class="dropdown-header">Emergency</h6>
+                </li>
+                
                 <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Hospitals')">Hospitals</a></li>
+                
+                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Power')">Power</a></li>
+                
+                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Police Stations')">Police Stations</a></li>
+                
+                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Fire Stations')">Fire Stations</a></li>
+                
+                
+                <li>
+                    <h6 class="dropdown-header">Nature</h6>
+                </li>
+                
+                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Waterways\/Riveres')">Waterways/Riveres</a></li>
+                
+                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Ponds')">Ponds</a></li>
+                
+                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Farmlands')">Farmlands</a></li>
+                
+                
+                <li>
+                    <h6 class="dropdown-header">Political</h6>
+                </li>
+                
+                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Boundaries')">Boundaries</a></li>
+                
+                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Government Offices')">Government Offices</a></li>
+                
+                
+                <li>
+                    <h6 class="dropdown-header">Public Transport</h6>
+                </li>
+                
+                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Roads')">Roads</a></li>
+                
+                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Rails')">Rails</a></li>
+                
+                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Taxi')">Taxi</a></li>
+                
+                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Petrol Pumps')">Petrol Pumps</a></li>
+                
+                
             </ul>
         </div>
         <button id="download" class="btn btn-dark shadow" disabled>

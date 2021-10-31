@@ -1,14 +1,24 @@
 <ol class="nav">
-    {{ template "breadcrumbnav" (dict "p1" . "p2" .) }}
+    {{ template "breadcrumb" dict "currentPage" .Page "origPage" .Page }}
 </ol>
-{{ define "breadcrumbnav" }}
-{{ if .p1.Parent }}
-{{ template "breadcrumbnav" (dict "p1" .p1.Parent "p2" .p2 ) }}
-{{ else if not .p1.IsHome }}
-{{ template "breadcrumbnav" (dict "p1" .p1.Site.Home "p2" .p2 ) }}
+
+{{ define "breadcrumb" }}
+{{ if .currentPage.Parent }}
+{{ if ne .currentPage.Parent .IsHome }}
+{{ template "breadcrumb" dict "currentPage" .currentPage.Parent }}
 {{ end }}
-<li class="nav-link active {{ if eq .p1 .p2 }} bg-dark {{ end }} rounded m-1 p-2">
-    <a class="{{ if eq .p1 .p2 }} text-light {{ else }} text-dark  {{ end }} text-decoration-none "
-        href="{{ .p1.Permalink }}">{{ .p1.Params.len | default .p1.Title }}</a>
+{{ if eq .origPage .currentPage }}
+<li class="nav-link active bg-dark rounded m-1 p-2">
+    <a class="text-light text-decoration-none" href="{{ .currentPage.Permalink }}">
+        {{ .currentPage.Params.len | default .currentPage.Title }}
+    </a>
 </li>
+{{ else }}
+<li class="nav-link active rounded m-1 p-2">
+    <a class="text-dark text-decoration-none" href="{{ .currentPage.Permalink }}">
+        {{ .currentPage.Params.len | default .currentPage.Title }}
+    </a>
+</li>
+{{ end }}
+{{ end }}
 {{ end }}

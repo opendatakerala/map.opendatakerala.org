@@ -136,126 +136,172 @@
             Marutharode Grama Panchayat
         </div>
         <div class="dropdown d-flex">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false" id="configuration">
-                Boundaries
+            <button class="btn btn-secondary" type="button" data-bs-toggle="modal" id="configuration-button"
+                data-bs-target="#configuration-chooser">
+                <span id="configuration">Boundaries</span> &nbsp;
+                <i class="fa-solid fa-gear"></i>
             </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                
-                <li>
-                    <h6 class="dropdown-header">Amenities</h6>
-                </li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Ration shops')">Ration shops</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Banks')">Banks</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('ATMs')">ATMs</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Post Offices')">Post Offices</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Petrol Pumps')">Petrol Pumps</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Shops')">Shops</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Sports')">Sports</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Drinking Water')">Drinking Water</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Free WiFi')">Free WiFi</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Toilets')">Toilets</a></li>
-                
-                
-                <li>
-                    <h6 class="dropdown-header">Education</h6>
-                </li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Schools')">Schools</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Colleges')">Colleges</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Kindergartens')">Kindergartens</a></li>
-                
-                
-                <li>
-                    <h6 class="dropdown-header">Emergency</h6>
-                </li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Hospitals')">Hospitals</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Power')">Power</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Police Stations')">Police Stations</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Fire Stations')">Fire Stations</a></li>
-                
-                
-                <li>
-                    <h6 class="dropdown-header">Nature</h6>
-                </li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Waterways\/Riveres')">Waterways/Riveres</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Ponds')">Ponds</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Farmlands')">Farmlands</a></li>
-                
-                
-                <li>
-                    <h6 class="dropdown-header">Political</h6>
-                </li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Boundaries')">Boundaries</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Government Offices')">Government Offices</a></li>
-                
-                
-                <li>
-                    <h6 class="dropdown-header">Public Transport</h6>
-                </li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Roads')">Roads</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Rails')">Rails</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Taxi')">Taxi</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Petrol Pumps')">Petrol Pumps</a></li>
-                
-                
-                <li>
-                    <h6 class="dropdown-header">Recreation</h6>
-                </li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Community centres')">Community centres</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Libraries')">Libraries</a></li>
-                
-                
-                <li>
-                    <h6 class="dropdown-header">Religous</h6>
-                </li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Religion')">Religion</a></li>
-                
-                
-                <li>
-                    <h6 class="dropdown-header">Tourism</h6>
-                </li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Hotels')">Hotels</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Restaurants')">Restaurants</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Parking')">Parking</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Cinemas')">Cinemas</a></li>
-                
-                <li><a class="dropdown-item" href="#" onclick="javascript:reconfigure('Toilets')">Toilets</a></li>
-                
-                
-            </ul>
+            <div class="modal fade" id="configuration-chooser">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    
+                                    <div class="col-md-4 pt-4">
+                                        <h6>Amenities</h6>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Ration shops')">Ration shops</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Banks')">Banks</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('ATMs')">ATMs</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Post Offices')">Post Offices</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Petrol Pumps')">Petrol Pumps</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Shops')">Shops</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Sports')">Sports</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Drinking Water')">Drinking Water</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Free WiFi')">Free WiFi</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Toilets')">Toilets</button>
+                                        
+                                    </div>
+                                    
+                                    <div class="col-md-4 pt-4">
+                                        <h6>Education</h6>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Schools')">Schools</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Colleges')">Colleges</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Kindergartens')">Kindergartens</button>
+                                        
+                                    </div>
+                                    
+                                    <div class="col-md-4 pt-4">
+                                        <h6>Emergency</h6>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Hospitals')">Hospitals</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Power')">Power</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Police Stations')">Police Stations</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Fire Stations')">Fire Stations</button>
+                                        
+                                    </div>
+                                    
+                                    <div class="col-md-4 pt-4">
+                                        <h6>Nature</h6>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Waterways\/Riveres')">Waterways/Riveres</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Ponds')">Ponds</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Farmlands')">Farmlands</button>
+                                        
+                                    </div>
+                                    
+                                    <div class="col-md-4 pt-4">
+                                        <h6>Political</h6>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Boundaries')">Boundaries</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Government Offices')">Government Offices</button>
+                                        
+                                    </div>
+                                    
+                                    <div class="col-md-4 pt-4">
+                                        <h6>Public Transport</h6>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Roads')">Roads</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Rails')">Rails</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Taxi')">Taxi</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Petrol Pumps')">Petrol Pumps</button>
+                                        
+                                    </div>
+                                    
+                                    <div class="col-md-4 pt-4">
+                                        <h6>Recreation</h6>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Community centres')">Community centres</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Libraries')">Libraries</button>
+                                        
+                                    </div>
+                                    
+                                    <div class="col-md-4 pt-4">
+                                        <h6>Religous</h6>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Religion')">Religion</button>
+                                        
+                                    </div>
+                                    
+                                    <div class="col-md-4 pt-4">
+                                        <h6>Tourism</h6>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Hotels')">Hotels</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Restaurants')">Restaurants</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Parking')">Parking</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Cinemas')">Cinemas</button>
+                                        
+                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
+                                            onclick="javascript:reconfigure('Toilets')">Toilets</button>
+                                        
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <button id="download" class="btn btn-dark shadow" disabled>
             Download

@@ -1,0 +1,16 @@
+<div class="d-flex flex-wrap justify-content-evenly align-items-center" style="gap: 30px">
+    {{ range .Site.Data.community }}
+    <a href="{{ .url }}" class="text-decoration-none text-muted">
+        <div class="d-flex flex-column align-items-center justify-content-">
+            {{ if .logo }}
+            <img src="{{ .logo }}" width="100" {{ if .background }} style="background-color: {{ .background }}" {{ end
+                }} />
+            {{ else }}
+            <span class="display-6 text-center" {{ if .width }} style="max-width: {{ .width }}" {{ end }}>{{ .name
+                }}</span>
+            {{ end }}
+            <p>{{ .name }}</p>
+        </div>
+    </a>
+    {{ end }}
+</div>

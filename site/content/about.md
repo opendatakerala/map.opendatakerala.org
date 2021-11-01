@@ -18,3 +18,7 @@ Site built and maintained by
 * [Manoj Karingamadathil](https://meta.wikimedia.org/wiki/User:Manojk)
 
 {{< credits >}}
+
+## Community
+
+{{< community >}}

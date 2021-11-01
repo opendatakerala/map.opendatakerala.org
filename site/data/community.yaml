@@ -1,0 +1,42 @@
+- name: OpenDataKerala
+  logo: https://opendatakerala.org/logo.png
+  url: https://opendatakerala.org/
+
+- name: OpenStreetMap Kerala
+  url: https://kerala.openstreetmap.in/
+  logo: https://upload.wikimedia.org/wikipedia/commons/7/7e/OSMKerala_Logo.svg
+
+- name: Wikidata:WikiProject Kerala
+  url: https://www.wikidata.org/wiki/Wikidata:WikiProject_Kerala
+  logo: https://upload.wikimedia.org/wikipedia/commons/5/5f/Wikidata-ml.svg
+
+- name: Geominds
+  url: https://geominds.in/
+  logo: https://geominds.in/assets/logo/GeomindslogoBlue.png
+
+- name: Swathanthra Malayalam Computing
+  url: https://smc.org.in/
+  logo: https://gitlab.com/smc/smc.org.in/-/raw/master/src/assets/logo.png
+
+- name: CODD-K
+  url: https://team.covid19kerala.info/
+  logo: https://team.covid19kerala.info/logo.png
+
+- name: FOSS United
+  url: https://fossunited.org/
+  background: black
+  logo: https://fossunited.org/files/logo618eee.svg
+
+- name: Saparya Foundation
+  width: 200px
+  url: https://www.facebook.com/saparya.in
+
+- name: Free Software Community of India
+  url: https://fsci.in/
+  logo: https://fsci.in/img/fscilogo.svg
+
+- name: FSUG Thrissur
+  url: http://thrissur.fsug.in/
+
+- name: FOSSers of Vidya
+  url: http://fossers.vidyaacademy.ac.in/

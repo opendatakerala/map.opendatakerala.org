@@ -27,6 +27,8 @@
     </style>
     {{- partial "gtag.html" . -}}
     {{ block "head" . }}{{ end }}
+    {{ template "_internal/opengraph.html" . }}
+    {{ template "_internal/twitter_cards.html" . }}
 
 </head>
 

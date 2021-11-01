@@ -53,6 +53,8 @@ for row in records:
     # qid,len,lml,districtLabel,mldistrictLabel,enarticle,mlarticle,LGDcode,LSGcode,wards
 
     row['title'] = f"{row['len']} | {row['lml']} | {row['mldistrictLabel']} | {row['districtLabel']}" 
+    row['description'] = f"Geospatial data about {row['len']} ({row['districtLabel']})"
+    row['images'] = [f"/img/{row['qid']}.png"]
 
     district = get_district(row)
     

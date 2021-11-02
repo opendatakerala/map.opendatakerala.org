@@ -25,8 +25,7 @@ jobs:
           source-directory: 'site/public'
           destination-github-username: 'opendatakerala'
           destination-repository-name: 'map.opendatakerala.org'
-          user-email: akshay@learnlearn.in
-          commit-message: See ORIGIN_COMMIT from $GITHUB_REF
+          user-email: opendatakerala@gmail.com
+          user-name: OpenDataKerala
+          commit-message: Automatic commit based on ORIGIN_COMMIT
           target-branch: gh-pages
-      - name: Test get variable exported by push-to-another-repository
-        run: echo $DESTINATION_CLONED_DIRECTORY

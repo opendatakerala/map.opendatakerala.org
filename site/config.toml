@@ -2,12 +2,12 @@ baseURL = "https://map.opendatakerala.org/"
 languageCode = "en-us"
 title = "Map Kerala"
 
+# prevent Kannur becoming Kannurs
+pluralizeListTitles = false
+
 [params]
   description = 'A Gateway to Your Geospatial Map Data of Kerala'
   title = 'Map Kerala'
-
-# prevent Kannur becoming Kannurs
-pluralizelisttitles = "false"
 
 [outputs]
   page = ["HTML", "JSON"]

@@ -71,19 +71,6 @@ for row in records:
     with open(pagefilename, 'w') as page:
         json.dump(row, page)
 
-select_text = '<select name="lsg" id="lsg-select">'
-for district in menu_items:
-    # each district is an optgroup
-    select_text += '<optgroup label="{0}">'.format(district)
-    for lsg in menu_items[district]:
-        select_text += '<option value="/{0}/">{1}</option>'.format(get_slug(lsg), get_lsg(lsg))
-    select_text += '</optgroup>'
-
-select_text += '</select>'
-select_html_filename = Path(HUGO_ROOT_DIR, "layouts", "partials", "lsg-select.html")
-with open(select_html_filename, 'w') as select_partial:
-    select_partial.write(select_text)
-
 static_json_filename = Path(HUGO_ROOT_DIR, "static", "data.json")
 fields_to_keep = ["len", "lml", "qid"]
 stripped_data = {

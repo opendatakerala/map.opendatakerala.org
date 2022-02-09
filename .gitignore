@@ -1,5 +1,4 @@
 site/content/*
 !site/content/*.md
 site/public/
-site/layouts/partials/lsg-select.html
 site/static/data.json

@@ -12,20 +12,6 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 handle_india_boundaries(map);
 
-const slug = window.location.pathname;
-const lsgselect = document.getElementById("lsg-select");
-lsgselect.value = slug;
-
-lsgselect.addEventListener("change", (e) => {
-    const newLSGSelectedEvent = new CustomEvent("new-lsg-selected", {
-        detail: {
-            lsgCode: e.target.value,
-            lsgName: e.target.options[e.target.selectedIndex].innerHTML,
-        },
-    });
-    document.dispatchEvent(newLSGSelectedEvent);
-});
-
 var currentQid;
 var currentConfiguration = "Boundaries";
 var currentGeoJson;
@@ -121,21 +107,6 @@ const loadNewQid = (qid) => {
 
 currentQid = document.querySelector("#qid").textContent.trim();
 loadNewQid(currentQid);
-
-document.addEventListener("new-lsg-selected", (e) => {
-    downloadButton.disabled = true;
-    map.removeLayer(currentLayer);
-    document.querySelector(
-        "#lsgTitle"
-    ).textContent = `Going to ${e.detail.lsgName}...`;
-    fetch(`${e.detail.lsgCode}index.json`)
-        .then((res) => res.json())
-        .then((data) => {
-            loadNewQid(data.qid);
-            currentQid = data.qid;
-            currentLsg = data.len;
-        });
-});
 
 const reconfigure = (selection) => {
     configureButton = document.getElementById("configuration");

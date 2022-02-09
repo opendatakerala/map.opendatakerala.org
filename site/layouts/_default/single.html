@@ -26,6 +26,19 @@
 </style>
 {{ end }}
 
+{{ define "breadcrumb" }}
+<li class="nav-link rounded m-1 p-2">
+    <a class="text-dark text-decoration-none" href="{{ .currentPage.Parent.Permalink }}">
+        {{ .currentPage.Parent.Params.len | default .currentPage.Parent.Title }}
+    </a>
+</li>
+<li class="nav-link active bg-dark rounded m-1 p-2">
+    <a class="text-light text-decoration-none" href="{{ .currentPage.Permalink }}" data-mk-key="len">
+        {{ .currentPage.Params.len | default .currentPage.Title }}
+    </a>
+</li>
+{{ end }}
+
 {{ define "main" }}
 <div class="w-100 d-flex flex-column">
     <div class="alert alert-warning">

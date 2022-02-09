@@ -13,6 +13,7 @@
 - name: Geominds
   url: https://geominds.in/
   background: black
+  width: 200px
   logo: https://geominds.in/images/logo.png
 
 - name: Swathanthra Malayalam Computing

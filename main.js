@@ -13312,6 +13312,7 @@
     changeAll("[data-mk-key=qid]", state.qid);
     changeAll("[data-mk-key=len]", state.len);
     changeAll("[data-mk-key=lml]", state.lml);
+    document.querySelector("#wikidata-link").href = `https://www.wikidata.org/wiki/${state.qid}`;
   };
   var wikiChangeRequired = async () => {
     await fetchWikipediaPageByQid(state.qid);

@@ -1,14 +1,17 @@
-const addIndiaBoundaries = require('./india-boundaries')
-
-const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
-const KERALA_BOUNDS = [[7.477, 78.234],[13.5806, 74.2676]];
-const MIN_ZOOM = 7
+const addIndiaBoundaries = require("./india-boundaries");
+const {
+    KERALA_BOUNDS,
+    MIN_ZOOM,
+    OVERPASS_URL,
+    QUERIES,
+} = require("./constants");
+const { fetchJSONWithUrlSearchParams } = require("./utils");
 
 const map = L.map("map", {
     maxBounds: KERALA_BOUNDS,
     minZoom: MIN_ZOOM,
     maxBoundsViscosity: 0.9,
-}).fitBounds(KERALA_BOUNDS)
+}).fitBounds(KERALA_BOUNDS);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution:
@@ -16,23 +19,6 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 
 addIndiaBoundaries(map);
-
-const fetchJSONWithUrlSearchParams = (url, objectWithData) => {
-    const params = new URLSearchParams();
-
-    Object.keys(objectWithData).forEach((key) => {
-        params.append(key, objectWithData[key]);
-    });
-
-    return fetch(url, {
-        method: "POST",
-        body: params,
-        cors: true,
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-    }).then((res) => res.json());
-};
 
 var currentQid;
 var currentConfiguration = "Boundaries";
@@ -50,40 +36,6 @@ downloadButton.addEventListener("click", () => {
     a.click();
 });
 
-const QUERIES = {
-    "Government Offices": `"office"="government"`,
-    "Hospitals": `"amenity"="hospital"`,
-    "Power": `"power"`,
-    "Police Stations": `"amenity"="police"`,
-    "Fire Stations": `"amenity"="fire_station"`,
-    "Waterways/Rivers": `"waterway"`,
-    "Ponds": `"water"="pond"`,
-    "Farmlands": `"landuse"="farmland"`,
-    "Roads": `"highway"`,
-    "Rails": `"railway"`,
-    "Taxi": `"amenity"="taxi"`,
-    "Petrol Pumps": `"amenity"="fuel"`,
-    "Hotels": `"tourism"="hotel"`,
-    "Restaurants": `"amenity"="restaurant"`,
-    "Parking": `"amenity"="parking"`,
-    "Cinemas": `"amenity"="cinema"`,
-    "Toilets": `"amenity"="toilets"`,
-    "Religion": `"amenity"="place_of_worship"`,
-    "Schools": `"amenity"="school"`,
-    "Colleges": `"amenity"="college"`,
-    "Kindergartens": `"amenity"="kindergarten"`,
-    "Community centres": `"amenity"="community_centre"`,
-    "Libraries": `"amenity"="library"`,
-    "Ration shops": `name"="Ration shop"`,
-    "Banks": `"amenity"="bank"`,
-    "ATMs": `"amenity"="atm"`,
-    "Post Offices": `"amenity"="post_office"`,
-    "Shops": `"shop"="yes"`,
-    "Sports": `"sport"`,
-    "Drinking Water": `"amenity"="drinking_water"`,
-    "Free WiFi": `"wifi"`,
-}
-
 const getQuery = (qid, config) => {
     if (config === "Boundaries")
         return `[out:json] [timeout:500];
@@ -92,13 +44,12 @@ const getQuery = (qid, config) => {
     return `[out:json][timeout:500];
             (area["wikidata"="${qid}"];nwr(area)[${QUERIES[config]}];);
             (._;>;);
-            out geom;`
+            out geom;`;
 };
 
 const loadNewQid = (qid) => {
     const query = getQuery(qid, currentConfiguration);
 
-    
     fetchJSONWithUrlSearchParams(OVERPASS_URL, { data: query })
         .then((data) => {
             console.log(data);

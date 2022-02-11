@@ -1,9 +1,13 @@
-var keralaBounds = [[7.477, 78.234][(13.5806, 74.2676)]];
-var map = L.map("map", {
-    maxBounds: keralaBounds,
-    minZoom: 7,
+const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
+const KERALA_BOUNDS = [[7.477, 78.234][(13.5806, 74.2676)]];
+const SOMEWHAT_CENTER_OF_MAP = [10.6103587, 76.0569874];
+const MIN_ZOOM = 7
+
+const map = L.map("map", {
+    maxBounds: KERALA_BOUNDS,
+    minZoom: MIN_ZOOM,
     maxBoundsViscosity: 0.9,
-}).setView([10.6103587, 76.0569874], 7);
+}).setView(SOMEWHAT_CENTER_OF_MAP, MIN_ZOOM);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution:
@@ -93,8 +97,8 @@ const getQuery = (qid, config) => {
 const loadNewQid = (qid) => {
     const query = getQuery(qid, currentConfiguration);
 
-    const overpassUrl = "https://overpass-api.de/api/interpreter";
-    fetchJSONWithUrlSearchParams(overpassUrl, { data: query })
+    
+    fetchJSONWithUrlSearchParams(OVERPASS_URL, { data: query })
         .then((data) => {
             console.log(data);
             const geojson = osmtogeojson(data);
@@ -107,12 +111,12 @@ const loadNewQid = (qid) => {
             currentLayer = newlayer;
             const location = newlayer.getBounds().getCenter();
             map.flyTo(location, 12);
-            map.setMaxBounds(keralaBounds);
+            map.setMaxBounds(KERALA_BOUNDS);
         })
         .catch((err) => console.error(err));
 };
 
-currentQid = document.querySelector("#qid").textContent.trim();
+currentQid = document.querySelector("[data-mk-key=qid]").textContent.trim();
 loadNewQid(currentQid);
 
 const reconfigure = (selection) => {

@@ -46,8 +46,8 @@
         notice. Contact <a href="mailto:opendatakerala@gmail.com">opendatakerala@gmail.com</a> for more information.
     </div>
     <div id="controls" class="h1 mt-4 mb-4">
-        <div id="lsgTitle">
-            {{ .Params.len }}
+        <div id="lsgTitle" data-mk-key="len">
+            {{- .Params.len -}}
         </div>
         <div class="dropdown d-flex">
             <button class="btn btn-secondary" type="button" data-bs-toggle="modal" id="configuration-button"
@@ -88,8 +88,8 @@
 </div>
 
 <div id="metadata">
-    <div id="qid">
-        {{ .Params.qid }}
+    <div id="qid" data-mk-key="qid">
+        {{- .Params.qid -}}
     </div>
 </div>
 

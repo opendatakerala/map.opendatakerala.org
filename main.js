@@ -13182,6 +13182,62 @@
     }
   });
 
+  // ns-hugo:/__w/map-kerala/map-kerala/site/assets/wiki-utils.js
+  var require_wiki_utils = __commonJS({
+    "ns-hugo:/__w/map-kerala/map-kerala/site/assets/wiki-utils.js"(exports, module) {
+      var wikiStore = {
+        wd: {},
+        wp: {}
+      };
+      var wikiReqHeaders = new Headers({
+        Accept: "application/json",
+        "Accept-Encoding": "gzip",
+        "Content-Type": "application/json",
+        "Api-User-Agent": "https://map.opendatakerala.org/about/",
+        Origin: "*"
+      });
+      var WIKIDATA_API = "https://www.wikidata.org/w/api.php";
+      var WIKIDATA_QUERY_BASE = [
+        "action=wbgetentities",
+        "format=json",
+        "props=sitelinks",
+        "sitefilter=enwiki|mlwiki",
+        "origin=*"
+      ].join("&");
+      var EN_WIKI_API = "https://en.wikipedia.org/api/rest_v1";
+      var ML_WIKI_API = "https://ml.wikipedia.org/api/rest_v1";
+      var fetchWikipediaPageByQid2 = (qid) => {
+        return fetch(`${WIKIDATA_API}?${WIKIDATA_QUERY_BASE}&ids=${qid}`, {
+          headers: wikiReqHeaders
+        }).then((res) => res.json()).then((data) => {
+          wikiStore.wd[qid] = data;
+        }).then(() => hydrateWiki(qid));
+      };
+      var getAPI = (wikiname) => ({ mlwiki: ML_WIKI_API, enwiki: EN_WIKI_API })[wikiname];
+      var hydrateWiki = async (qid) => {
+        const siteLinks = wikiStore.wd[qid].entities[qid].sitelinks;
+        wikiStore.wp[qid] = {};
+        const requests = [];
+        ["mlwiki", "enwiki"].forEach((wiki) => {
+          if (!siteLinks.hasOwnProperty(wiki))
+            return;
+          const req = fetch(`${getAPI(wiki)}/page/summary/${siteLinks.mlwiki.title}?origin=*`, { headers: wikiReqHeaders }).then((res) => res.json()).then((data) => {
+            wikiStore.wp[qid][wiki] = data;
+          });
+          requests.push(req);
+        });
+        await Promise.all(requests);
+      };
+      var retrieveWikiPage2 = (qid) => {
+        return wikiStore.wp[qid];
+      };
+      module.exports = {
+        fetchWikipediaPageByQid: fetchWikipediaPageByQid2,
+        retrieveWikiPage: retrieveWikiPage2
+      };
+    }
+  });
+
   // <stdin>
   var L2 = require_leaflet_src();
   var addIndiaBoundaries = require_india_boundaries();
@@ -13196,6 +13252,7 @@
     getAllOverview,
     isValidQid
   } = require_map_utils();
+  var { fetchWikipediaPageByQid, retrieveWikiPage } = require_wiki_utils();
   var map = L2.map("map", {
     minZoom: MIN_ZOOM,
     maxBoundsViscosity: 0.9
@@ -13218,6 +13275,7 @@
     state.len = len;
     state.lml = lml;
     mapChangeRequired();
+    wikiChangeRequired();
     skeletonChangeRequired();
   };
   var setFeature = (feature) => {
@@ -13255,6 +13313,18 @@
     changeAll("[data-mk-key=len]", state.len);
     changeAll("[data-mk-key=lml]", state.lml);
   };
+  var wikiChangeRequired = async () => {
+    await fetchWikipediaPageByQid(state.qid);
+    const wp = retrieveWikiPage(state.qid);
+    if (!wp)
+      return;
+    const extracts = ["mlwiki", "enwiki"].map((wiki) => {
+      if (!wp[wiki])
+        return;
+      return `${wp[wiki].extract_html}<a target="_blank" href=${wp[wiki]?.content_urls.desktop.page}>Read more on wikipedia</a>`;
+    });
+    document.querySelector("#wikipedia").innerHTML = extracts.join("");
+  };
   var featureSelectionButtons = document.querySelectorAll("[data-mk-feature]");
   featureSelectionButtons.forEach((button) => {
     button.addEventListener("click", (e) => {
@@ -13263,6 +13333,7 @@
     });
   });
   mapChangeRequired();
+  wikiChangeRequired();
   var setUpSearch = () => {
     if (state.searchSetup)
       return;

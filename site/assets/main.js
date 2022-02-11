@@ -117,7 +117,7 @@ const wikiChangeRequired = async () => {
 
     const extracts = ["mlwiki", "enwiki"].map((wiki) => {
         if (!wp[wiki]) return;
-        return `${wp[wiki].extract_html}<a target="_blank" href=${wp[wiki]?.content_urls.desktop.page}>Read more on wikipedia</a>`;
+        return `${wp[wiki].extract_html}<a target="_blank" href=${wp[wiki]?.content_urls?.desktop?.page}>Read more on wikipedia</a>`;
     });
 
     document.querySelector("#wikipedia").innerHTML = extracts.join("");

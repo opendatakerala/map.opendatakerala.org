@@ -12,6 +12,7 @@ const {
     getAllOverview,
     isValidQid,
 } = require("map-utils");
+const { fetchWikipediaPageByQid, retrieveWikiPage } = require("wiki-utils");
 
 const map = L.map("map", {
     minZoom: MIN_ZOOM,
@@ -40,6 +41,7 @@ const setQid = (qid) => {
     state.len = len;
     state.lml = lml;
     mapChangeRequired();
+    wikiChangeRequired();
     skeletonChangeRequired();
 };
 
@@ -89,6 +91,19 @@ const skeletonChangeRequired = () => {
     changeAll("[data-mk-key=lml]", state.lml);
 };
 
+const wikiChangeRequired = async () => {
+    await fetchWikipediaPageByQid(state.qid);
+    const wp = retrieveWikiPage(state.qid);
+    if (!wp) return;
+
+    const extracts = ["mlwiki", "enwiki"].map((wiki) => {
+        if (!wp[wiki]) return;
+        return `${wp[wiki].extract_html}<a target="_blank" href=${wp[wiki]?.content_urls.desktop.page}>Read more on wikipedia</a>`;
+    });
+
+    document.querySelector("#wikipedia").innerHTML = extracts.join("");
+};
+
 const featureSelectionButtons = document.querySelectorAll("[data-mk-feature]");
 featureSelectionButtons.forEach((button) => {
     button.addEventListener("click", (e) => {
@@ -98,6 +113,7 @@ featureSelectionButtons.forEach((button) => {
 });
 
 mapChangeRequired();
+wikiChangeRequired();
 
 const setUpSearch = () => {
     if (state.searchSetup) return;

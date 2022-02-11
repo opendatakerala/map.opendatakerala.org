@@ -65,8 +65,8 @@
                                     <div class="col-md-4 pt-4">
                                         <h6>{{ $group }}</h6>
                                         {{ range $features }}
-                                        <button type="button" class="btn-secondary btn-lg" data-bs-dismiss="modal"
-                                            onclick="javascript:reconfigure('{{ . }}')">{{ . }}</button>
+                                        <button type="button" class="btn-secondary btn-lg feature-button" data-bs-dismiss="modal"
+                                            data-mk-feature="{{ . }}">{{ . }}</button>
                                         {{ end }}
                                     </div>
                                     {{ end }}

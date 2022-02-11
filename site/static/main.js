@@ -12,6 +12,23 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 handle_india_boundaries(map);
 
+const fetchJSONWithUrlSearchParams = (url, objectWithData) => {
+    const params = new URLSearchParams();
+
+    Object.keys(objectWithData).forEach((key) => {
+        params.append(key, objectWithData[key]);
+    });
+
+    return fetch(url, {
+        method: "POST",
+        body: params,
+        cors: true,
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        },
+    }).then((res) => res.json());
+};
+
 var currentQid;
 var currentConfiguration = "Boundaries";
 var currentGeoJson;
@@ -76,18 +93,8 @@ const getQuery = (qid, config) => {
 const loadNewQid = (qid) => {
     const query = getQuery(qid, currentConfiguration);
 
-    const params = new URLSearchParams();
-    params.append("data", query);
-
-    fetch("https://overpass-api.de/api/interpreter", {
-        method: "POST",
-        body: params,
-        cors: true,
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-    })
-        .then((res) => res.json())
+    const overpassUrl = "https://overpass-api.de/api/interpreter";
+    fetchJSONWithUrlSearchParams(overpassUrl, { data: query })
         .then((data) => {
             console.log(data);
             const geojson = osmtogeojson(data);

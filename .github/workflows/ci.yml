@@ -11,9 +11,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install python and hugo
-        run:  apk add python3 hugo
+        run:  apk add python3 hugo npm
       - name: generates content
         run:  python3 generate.py
+      - name: install npm modules
+        run: npm --prefix ./site install
       - name: generate site
         run: hugo -s site
       - name: Pushes to another repository

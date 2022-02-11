@@ -1,3 +1,5 @@
+const osmtogeojson = require('osmtogeojson');
+
 const addIndiaBoundaries = require("./india-boundaries");
 const {
     KERALA_BOUNDS,
@@ -52,9 +54,7 @@ const loadNewQid = (qid) => {
 
     fetchJSONWithUrlSearchParams(OVERPASS_URL, { data: query })
         .then((data) => {
-            console.log(data);
             const geojson = osmtogeojson(data);
-            console.log(geojson);
             currentGeoJson = geojson;
             downloadButton.disabled = false;
             document.querySelector("#lsgTitle").textContent = `${currentLsg}`;

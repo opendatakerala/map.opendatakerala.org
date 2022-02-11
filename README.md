@@ -11,5 +11,6 @@ For example,
 ```
 python generate.py
 cd site
+npm install
 hugo server
 ```

@@ -54,9 +54,10 @@ const expectSearch = async () => {
 };
 
 const createOverview = () => {
-    for (const district in Object.keys(mapDataStore.overview)) {
-        for (const el in mapDataStore.overview[district]) {
-            mapDataStore.overview[el.qid] = { ...el, district };
+    mapDataStore.byQid = {};
+    for (const district of Object.keys(mapDataStore.overview)) {
+        for (const el of mapDataStore.overview[district]) {
+            mapDataStore.byQid[el.qid] = { ...el, district };
         }
     }
 };
@@ -74,7 +75,9 @@ const startDownload = (qid, feature) => {
     a.click();
 };
 
-const getOverview = (qid) => mapDataStore.overview[qid];
+const getOverview = (qid) => mapDataStore.byQid[qid];
+const getAllOverview = () => mapDataStore.byQid;
+const isValidQid = (maybeQid) => mapDataStore.byQid.hasOwnProperty(maybeQid);
 
 module.exports = {
     expect,
@@ -82,4 +85,7 @@ module.exports = {
     getLayer,
     startDownload,
     getOverview,
+    getAllOverview,
+    expectSearch,
+    isValidQid,
 };

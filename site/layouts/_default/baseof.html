@@ -53,9 +53,8 @@
                 </ul>
                 {{ if and (not (eq .Layout "meta")) (not (eq .Kind "section" )) }}
                 <div class="d-flex">
-                    <div id="search">
-                        <input />
-                    </div>
+                    <input id="search" list="search-datalist"/>
+                    <datalist id="search-datalist"></datalist>
                 </div>
                 {{ end }}
             </div>

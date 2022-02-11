@@ -100,9 +100,8 @@
 
 <script src="https://tyrasd.github.io/osmtogeojson/osmtogeojson.js"></script>
 
-<script src="../../india-boundaries.js"></script>
-
-<script src="../../main.js"></script>
+{{ $js := resources.Get "main.js" | js.Build (dict "minify" false) }}
+<script src="{{ $js.RelPermalink }}"></script>
 
 {{- .Content -}}
 {{ end }}

@@ -1,20 +1,21 @@
+const addIndiaBoundaries = require('./india-boundaries')
+
 const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
-const KERALA_BOUNDS = [[7.477, 78.234][(13.5806, 74.2676)]];
-const SOMEWHAT_CENTER_OF_MAP = [10.6103587, 76.0569874];
+const KERALA_BOUNDS = [[7.477, 78.234],[13.5806, 74.2676]];
 const MIN_ZOOM = 7
 
 const map = L.map("map", {
     maxBounds: KERALA_BOUNDS,
     minZoom: MIN_ZOOM,
     maxBoundsViscosity: 0.9,
-}).setView(SOMEWHAT_CENTER_OF_MAP, MIN_ZOOM);
+}).fitBounds(KERALA_BOUNDS)
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
 
-handle_india_boundaries(map);
+addIndiaBoundaries(map);
 
 const fetchJSONWithUrlSearchParams = (url, objectWithData) => {
     const params = new URLSearchParams();

@@ -1,4 +1,3 @@
 site/content/*
 !site/content/*.md
-site/public/
 site/static/data.json

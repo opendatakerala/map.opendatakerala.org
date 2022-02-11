@@ -1,7 +1,7 @@
 // Copyright Arun Ganesh
 // https://jsfiddle.net/planemad/1oy4v5g2/26/
 
-const indiaBoundayLines = {
+const indiaBoundaryLines = {
   type: "FeatureCollection",
   features: [
     {
@@ -2701,20 +2701,9 @@ const indiaBoundayLines = {
   ],
 };
 
-var indiaBoundaries;
-
-function addIndiaBoundaries(map) {
-  // this function adds the boundaries with the style's weight determined
-  // by the current zoom level
-  indiaBoundaries = L.geoJSON(indiaBoundayLines, {
-    style: boundaryStyle,
-  }).addTo(map);
-}
-
-function boundaryStyle(feature) {
+const getBoundaryStyleFunction = (map) => (feature) => {
   // the weight is a function of the current map scale
-  var wt;
-  wt = map.getZoom() / 4;
+  const wt = map.getZoom() / 4;
   switch (feature.properties.boundary) {
     case "disputed":
       return {
@@ -2729,13 +2718,11 @@ function boundaryStyle(feature) {
   }
 }
 
-function handle_india_boundaries(map) {
-  addIndiaBoundaries(map);
 
-  // whenever the zoom level changes, remove the layer and re-add it to
-  // force the style to update based on the current map scale
-  map.on("zoomend", function () {
-    indiaBoundaries.removeFrom(map);
-    addIndiaBoundaries(map);
-  });
+function addIndiaBoundaries(map) {
+  L.geoJSON(indiaBoundaryLines, {
+    style: getBoundaryStyleFunction(map),
+  }).addTo(map);
 }
+
+module.exports = addIndiaBoundaries

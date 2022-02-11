@@ -71,7 +71,7 @@ const startDownload = (qid, feature) => {
     const blob = new Blob([bytes], { type: "application/json;charset=utf-8" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `${qid} - ${feature}.geojson`;
+    a.download = `${getOverview(qid).len} - ${feature}.geojson`;
     a.click();
 };
 

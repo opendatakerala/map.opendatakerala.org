@@ -55,6 +55,7 @@ for row in records:
     row['title'] = f"{row['len']} | {row['lml']} | {row['mldistrictLabel']} | {row['districtLabel']}" 
     row['description'] = f"Geospatial data about {row['len']} ({row['districtLabel']})"
     row['images'] = [f"/img/{row['qid']}.png"]
+    row['urlpath'] = get_slug(row)
 
     district = get_district(row)
     
@@ -72,7 +73,7 @@ for row in records:
         json.dump(row, page)
 
 static_json_filename = Path(HUGO_ROOT_DIR, "static", "data.json")
-fields_to_keep = ["len", "lml", "qid"]
+fields_to_keep = ["len", "lml", "qid", "urlpath"]
 stripped_data = {
     district: [
         {

@@ -36,10 +36,17 @@ const state = {
 };
 
 const setQid = (qid) => {
+    setQidExceptUrlChange(qid);
+    urlChangeRequired();
+};
+
+const setQidExceptUrlChange = (qid) => {
     state.qid = qid;
-    const { len, lml } = getOverview(qid);
+    const { len, lml, urlpath, district } = getOverview(qid);
     state.len = len;
     state.lml = lml;
+    state.district = district;
+    state.urlpath = urlpath;
     mapChangeRequired();
     wikiChangeRequired();
     skeletonChangeRequired();
@@ -89,9 +96,18 @@ const skeletonChangeRequired = () => {
     changeAll("[data-mk-key=qid]", state.qid);
     changeAll("[data-mk-key=len]", state.len);
     changeAll("[data-mk-key=lml]", state.lml);
+    changeAll("[data-mk-key=district]", state.district);
+    document.querySelector(
+        "#district-link"
+    ).href = `/${state.district.toLowerCase()}/`;
+    document.querySelector("#lsg-link").href = `/${state.urlpath}/`;
     document.querySelector(
         "#wikidata-link"
     ).href = `https://www.wikidata.org/wiki/${state.qid}`;
+};
+
+const urlChangeRequired = () => {
+    window.history.pushState({ qid: state.qid }, "", `/${state.urlpath}/`);
 };
 
 const wikiChangeRequired = async () => {
@@ -140,4 +156,10 @@ document.querySelector("#search").addEventListener("input", (e) => {
     if (!isValidQid(maybeQid)) return;
     e.target.value = "";
     setQid(maybeQid);
+});
+
+window.history.replaceState({ qid: state.qid }, "", window.location.pathname);
+
+window.addEventListener("popstate", (event) => {
+    setQidExceptUrlChange(event.state.qid);
 });

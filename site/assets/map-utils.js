@@ -54,6 +54,7 @@ const expectSearch = async () => {
 };
 
 const createOverview = () => {
+    if (mapDataStore.hasOwnProperty("byQid")) return;
     mapDataStore.byQid = {};
     for (const district of Object.keys(mapDataStore.overview)) {
         for (const el of mapDataStore.overview[district]) {
@@ -65,16 +66,6 @@ const createOverview = () => {
 const getLayer = (qid, feature) => mapDataStore[`${qid}#${feature}`].mapLayer;
 const getGeojson = (qid, feature) => mapDataStore[`${qid}#${feature}`].geojson;
 
-const startDownload = (qid, feature) => {
-    const string = JSON.stringify(getGeojson(qid, feature));
-    const bytes = new TextEncoder().encode(string);
-    const blob = new Blob([bytes], { type: "application/json;charset=utf-8" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `${getOverview(qid).len} - ${feature}.geojson`;
-    a.click();
-};
-
 const getOverview = (qid) => mapDataStore.byQid[qid];
 const getAllOverview = () => mapDataStore.byQid;
 const isValidQid = (maybeQid) => mapDataStore.byQid.hasOwnProperty(maybeQid);
@@ -83,8 +74,8 @@ module.exports = {
     expect,
     available,
     getLayer,
-    startDownload,
     getOverview,
+    getGeojson,
     getAllOverview,
     expectSearch,
     isValidQid,

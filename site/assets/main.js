@@ -3,7 +3,6 @@ const L = require("leaflet");
 const addIndiaBoundaries = require("./india-boundaries");
 const { KERALA_BOUNDS, MIN_ZOOM } = require("./constants");
 const {
-    startDownload,
     expect,
     available,
     getLayer,
@@ -11,6 +10,7 @@ const {
     expectSearch,
     getAllOverview,
     isValidQid,
+    getGeojson,
 } = require("map-utils");
 const { fetchWikipediaPageByQid, retrieveWikiPage } = require("wiki-utils");
 
@@ -59,9 +59,22 @@ const setFeature = (feature) => {
     mapChangeRequired();
 };
 
+const startJSONDownload = (filename, data) => {
+    const string = JSON.stringify(data);
+    const bytes = new TextEncoder().encode(string);
+    const blob = new Blob([bytes], { type: "application/json;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+};
+
 const downloadButton = document.querySelector("#download");
 downloadButton.addEventListener("click", () => {
-    startDownload(state.qid, state.feature);
+    startJSONDownload(
+        `${state.len} - ${state.feature}.geojson`,
+        getGeojson(state.qid, state.feature)
+    );
 });
 const disableDownload = () => (downloadButton.disabled = true);
 const enableDownload = () => (downloadButton.disabled = false);

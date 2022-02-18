@@ -80,8 +80,10 @@ const disableDownload = () => (downloadButton.disabled = true);
 const enableDownload = () => (downloadButton.disabled = false);
 
 const spinner = document.querySelector("[role=status]");
-showSpinner = () => (spinner.style.visibility = "visible");
-hideSpinner = () => (spinner.style.visibility = "hidden");
+const showSpinner = () => (spinner.style.visibility = "visible");
+const hideSpinner = () => (spinner.style.visibility = "hidden");
+
+const showUselessWarning = () => alert("Sorry, no data available for that.");
 
 const mapChangeRequired = async () => {
     showSpinner();
@@ -93,11 +95,16 @@ const mapChangeRequired = async () => {
 
     const layer = getLayer(state.qid, state.feature);
 
-    state.displayedLayers = [layer];
-    map.addLayer(layer);
-    map.flyTo(layer.getBounds().getCenter(), 12);
-    hideSpinner();
-    enableDownload();
+    if (layer === "USELESS") {
+        hideSpinner();
+        showUselessWarning();
+    } else {
+        state.displayedLayers = [layer];
+        map.addLayer(layer);
+        map.flyTo(layer.getBounds().getCenter(), 12);
+        hideSpinner();
+        enableDownload();
+    }
 };
 
 const changeAll = (selector, content) =>

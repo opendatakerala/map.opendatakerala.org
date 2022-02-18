@@ -13096,8 +13096,10 @@
           }
         }).then((res) => res.json());
       };
+      var isEmptyObject = (obj) => Object.keys(obj).length === 0;
       module.exports = {
-        fetchJSONWithUrlSearchParams
+        fetchJSONWithUrlSearchParams,
+        isEmptyObject
       };
     }
   });
@@ -13109,7 +13111,7 @@
       var L3 = require_leaflet_src();
       var { QUERIES } = require_constants();
       var { OVERPASS_URL } = require_constants();
-      var { fetchJSONWithUrlSearchParams } = require_utils();
+      var { fetchJSONWithUrlSearchParams, isEmptyObject } = require_utils();
       var mapDataStore = {};
       var getQuery = (qid, feature) => {
         if (feature === "Boundaries")
@@ -13126,12 +13128,20 @@
         return fetchJSONWithUrlSearchParams(OVERPASS_URL, { data: query }).then((data) => {
           const geojson = osmtogeojson(data);
           const mapLayer = L3.geoJSON(geojson, { color: "blue" });
-          const location = mapLayer.getBounds().getCenter();
-          mapDataStore[`${qid}#${feature}`] = {
-            geojson,
-            mapLayer,
-            location
-          };
+          if (isEmptyObject(mapLayer.getBounds())) {
+            mapDataStore[`${qid}#${feature}`] = {
+              geojson: "USELESS",
+              mapLayer: "USELESS",
+              location: "USELESS"
+            };
+          } else {
+            const location = mapLayer.getBounds().getCenter();
+            mapDataStore[`${qid}#${feature}`] = {
+              geojson,
+              mapLayer,
+              location
+            };
+          }
         });
       };
       var expect2 = async (qid, feature) => {
@@ -13148,6 +13158,8 @@
         return fetch("/data.json").then((res) => res.json()).then((data) => mapDataStore.overview = data).then(() => createOverview());
       };
       var createOverview = () => {
+        if (mapDataStore.hasOwnProperty("byQid"))
+          return;
         mapDataStore.byQid = {};
         for (const district of Object.keys(mapDataStore.overview)) {
           for (const el of mapDataStore.overview[district]) {
@@ -13156,16 +13168,7 @@
         }
       };
       var getLayer2 = (qid, feature) => mapDataStore[`${qid}#${feature}`].mapLayer;
-      var getGeojson = (qid, feature) => mapDataStore[`${qid}#${feature}`].geojson;
-      var startDownload2 = (qid, feature) => {
-        const string = JSON.stringify(getGeojson(qid, feature));
-        const bytes = new TextEncoder().encode(string);
-        const blob = new Blob([bytes], { type: "application/json;charset=utf-8" });
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = `${getOverview2(qid).len} - ${feature}.geojson`;
-        a.click();
-      };
+      var getGeojson2 = (qid, feature) => mapDataStore[`${qid}#${feature}`].geojson;
       var getOverview2 = (qid) => mapDataStore.byQid[qid];
       var getAllOverview2 = () => mapDataStore.byQid;
       var isValidQid2 = (maybeQid) => mapDataStore.byQid.hasOwnProperty(maybeQid);
@@ -13173,8 +13176,8 @@
         expect: expect2,
         available: available2,
         getLayer: getLayer2,
-        startDownload: startDownload2,
         getOverview: getOverview2,
+        getGeojson: getGeojson2,
         getAllOverview: getAllOverview2,
         expectSearch: expectSearch2,
         isValidQid: isValidQid2
@@ -13243,14 +13246,14 @@
   var addIndiaBoundaries = require_india_boundaries();
   var { KERALA_BOUNDS, MIN_ZOOM } = require_constants();
   var {
-    startDownload,
     expect,
     available,
     getLayer,
     getOverview,
     expectSearch,
     getAllOverview,
-    isValidQid
+    isValidQid,
+    getGeojson
   } = require_map_utils();
   var { fetchWikipediaPageByQid, retrieveWikiPage } = require_wiki_utils();
   var map = L2.map("map", {
@@ -13290,15 +13293,25 @@
     configureButton.textContent = feature;
     mapChangeRequired();
   };
+  var startJSONDownload = (filename, data) => {
+    const string = JSON.stringify(data);
+    const bytes = new TextEncoder().encode(string);
+    const blob = new Blob([bytes], { type: "application/json;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+  };
   var downloadButton = document.querySelector("#download");
   downloadButton.addEventListener("click", () => {
-    startDownload(state.qid, state.feature);
+    startJSONDownload(`${state.len} - ${state.feature}.geojson`, getGeojson(state.qid, state.feature));
   });
   var disableDownload = () => downloadButton.disabled = true;
   var enableDownload = () => downloadButton.disabled = false;
   var spinner = document.querySelector("[role=status]");
-  showSpinner = () => spinner.style.visibility = "visible";
-  hideSpinner = () => spinner.style.visibility = "hidden";
+  var showSpinner = () => spinner.style.visibility = "visible";
+  var hideSpinner = () => spinner.style.visibility = "hidden";
+  var showUselessWarning = () => alert("Sorry, no data available for that.");
   var mapChangeRequired = async () => {
     showSpinner();
     state.displayedLayers.forEach((oldLayer) => map.removeLayer(oldLayer));
@@ -13307,11 +13320,16 @@
     if (!available(state.qid, state.feature))
       return;
     const layer = getLayer(state.qid, state.feature);
-    state.displayedLayers = [layer];
-    map.addLayer(layer);
-    map.flyTo(layer.getBounds().getCenter(), 12);
-    hideSpinner();
-    enableDownload();
+    if (layer === "USELESS") {
+      hideSpinner();
+      showUselessWarning();
+    } else {
+      state.displayedLayers = [layer];
+      map.addLayer(layer);
+      map.flyTo(layer.getBounds().getCenter(), 12);
+      hideSpinner();
+      enableDownload();
+    }
   };
   var changeAll = (selector, content) => document.querySelectorAll(selector).forEach((el) => el.textContent = content);
   var skeletonChangeRequired = () => {

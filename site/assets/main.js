@@ -130,6 +130,11 @@ const urlChangeRequired = () => {
     window.history.pushState({ qid: state.qid }, "", `/${state.urlpath}/`);
 };
 
+const messages = {
+    enwiki: `Read more on wikipedia`,
+    mlwiki: `വിക്കിപീഡിയയില്‍ കൂടുതല്‍ വായിക്കാം`,
+};
+
 const wikiChangeRequired = async () => {
     await fetchWikipediaPageByQid(state.qid);
     const wp = retrieveWikiPage(state.qid);
@@ -137,7 +142,7 @@ const wikiChangeRequired = async () => {
 
     const extracts = ["mlwiki", "enwiki"].map((wiki) => {
         if (!wp[wiki]) return;
-        return `${wp[wiki].extract_html}<a target="_blank" href=${wp[wiki]?.content_urls?.desktop?.page}>Read more on wikipedia</a>`;
+        return `${wp[wiki].extract_html}<a target="_blank" href=${wp[wiki]?.content_urls?.desktop?.page}>${messages[wiki]}</a>`;
     });
 
     document.querySelector("#wikipedia").innerHTML = extracts.join("");

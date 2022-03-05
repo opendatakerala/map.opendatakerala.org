@@ -10520,7 +10520,7 @@
         Kindergartens: `"amenity"="kindergarten"`,
         "Community centres": `"amenity"="community_centre"`,
         Libraries: `"amenity"="library"`,
-        "Ration shops": `name"="Ration shop"`,
+        "Ration shops": `"name"="Ration shop"`,
         Banks: `"amenity"="bank"`,
         ATMs: `"amenity"="atm"`,
         "Post Offices": `"amenity"="post_office"`,
@@ -13224,7 +13224,7 @@
         ["mlwiki", "enwiki"].forEach((wiki) => {
           if (!siteLinks.hasOwnProperty(wiki))
             return;
-          const req = fetch(`${getAPI(wiki)}/page/summary/${siteLinks.mlwiki.title}?origin=*`, { headers: wikiReqHeaders }).then((res) => res.json()).then((data) => {
+          const req = fetch(`${getAPI(wiki)}/page/summary/${siteLinks[wiki].title}?origin=*`, { headers: wikiReqHeaders }).then((res) => res.json()).then((data) => {
             wikiStore.wp[qid][wiki] = data;
           });
           requests.push(req);

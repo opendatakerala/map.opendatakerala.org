@@ -13344,6 +13344,10 @@
   var urlChangeRequired = () => {
     window.history.pushState({ qid: state.qid }, "", `/${state.urlpath}/`);
   };
+  var messages = {
+    enwiki: `Read more on wikipedia`,
+    mlwiki: `\u0D35\u0D3F\u0D15\u0D4D\u0D15\u0D3F\u0D2A\u0D40\u0D21\u0D3F\u0D2F\u0D2F\u0D3F\u0D32\u0D4D\u200D \u0D15\u0D42\u0D1F\u0D41\u0D24\u0D32\u0D4D\u200D \u0D35\u0D3E\u0D2F\u0D3F\u0D15\u0D4D\u0D15\u0D3E\u0D02`
+  };
   var wikiChangeRequired = async () => {
     await fetchWikipediaPageByQid(state.qid);
     const wp = retrieveWikiPage(state.qid);
@@ -13352,7 +13356,7 @@
     const extracts = ["mlwiki", "enwiki"].map((wiki) => {
       if (!wp[wiki])
         return;
-      return `${wp[wiki].extract_html}<a target="_blank" href=${wp[wiki]?.content_urls?.desktop?.page}>Read more on wikipedia</a>`;
+      return `${wp[wiki].extract_html}<a target="_blank" href=${wp[wiki]?.content_urls?.desktop?.page}>${messages[wiki]}</a>`;
     });
     document.querySelector("#wikipedia").innerHTML = extracts.join("");
   };

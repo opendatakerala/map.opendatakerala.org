@@ -42,7 +42,7 @@ const hydrateWiki = async (qid) => {
     ["mlwiki", "enwiki"].forEach((wiki) => {
         if (!siteLinks.hasOwnProperty(wiki)) return;
         const req = fetch(
-            `${getAPI(wiki)}/page/summary/${siteLinks.mlwiki.title}?origin=*`,
+            `${getAPI(wiki)}/page/summary/${siteLinks[wiki].title}?origin=*`,
             { headers: wikiReqHeaders }
         )
             .then((res) => res.json())

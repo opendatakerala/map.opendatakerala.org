@@ -66,8 +66,8 @@
                                     <div class="col-md-4 pt-4">
                                         <h6>{{ $group }}</h6>
                                         {{ range $features }}
-                                        <button type="button" class="btn-secondary btn-lg feature-button" data-bs-dismiss="modal"
-                                            data-mk-feature="{{ . }}">{{ . }}</button>
+                                        <button type="button" class="btn-secondary btn-lg feature-button"
+                                            data-bs-dismiss="modal" data-mk-feature="{{ . }}">{{ . }}</button>
                                         {{ end }}
                                     </div>
                                     {{ end }}
@@ -88,7 +88,7 @@
 
     </div>
     <div class="card shadow-lg" id="map"></div>
-    <div class="card" id="wikidata"><a id="wikidata-link" target="_blank"
+    <div class="card" id="wikidata" style="display: none;"><a id="wikidata-link" target="_blank"
             href="https://www.wikidata.org/wiki/{{ .Params.qid }}">View on Wikidata</a></div>
     <div class="card" id="wikipedia"></div>
 

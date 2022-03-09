@@ -100,7 +100,7 @@
     </div>
 </div>
 
-{{ $js := resources.Get "main.js" | js.Build (dict "minify" false) }}
+{{ $js := resources.Get "main.js" | js.Build (dict "minify" false "target" "es2015") }}
 <script src="{{ $js.RelPermalink }}"></script>
 
 {{- .Content -}}

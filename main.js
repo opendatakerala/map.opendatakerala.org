@@ -1,6 +1,45 @@
 (() => {
+  var __defProp = Object.defineProperty;
+  var __defProps = Object.defineProperties;
+  var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+  var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __propIsEnum = Object.prototype.propertyIsEnumerable;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+  var __spreadValues = (a, b) => {
+    for (var prop in b || (b = {}))
+      if (__hasOwnProp.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    if (__getOwnPropSymbols)
+      for (var prop of __getOwnPropSymbols(b)) {
+        if (__propIsEnum.call(b, prop))
+          __defNormalProp(a, prop, b[prop]);
+      }
+    return a;
+  };
+  var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
   var __commonJS = (cb, mod) => function __require() {
     return mod || (0, cb[Object.keys(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  };
+  var __async = (__this, __arguments, generator) => {
+    return new Promise((resolve, reject) => {
+      var fulfilled = (value) => {
+        try {
+          step(generator.next(value));
+        } catch (e) {
+          reject(e);
+        }
+      };
+      var rejected = (value) => {
+        try {
+          step(generator.throw(value));
+        } catch (e) {
+          reject(e);
+        }
+      };
+      var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+      step((generator = generator.apply(__this, __arguments)).next());
+    });
   };
 
   // site/node_modules/leaflet/dist/leaflet-src.js
@@ -2507,23 +2546,23 @@
             return this.options.position;
           },
           setPosition: function(position) {
-            var map2 = this._map;
-            if (map2) {
-              map2.removeControl(this);
+            var map = this._map;
+            if (map) {
+              map.removeControl(this);
             }
             this.options.position = position;
-            if (map2) {
-              map2.addControl(this);
+            if (map) {
+              map.addControl(this);
             }
             return this;
           },
           getContainer: function() {
             return this._container;
           },
-          addTo: function(map2) {
+          addTo: function(map) {
             this.remove();
-            this._map = map2;
-            var container = this._container = this.onAdd(map2), pos = this.getPosition(), corner = map2._controlCorners[pos];
+            this._map = map;
+            var container = this._container = this.onAdd(map), pos = this.getPosition(), corner = map._controlCorners[pos];
             addClass(container, "leaflet-control");
             if (pos.indexOf("bottom") !== -1) {
               corner.insertBefore(container, corner.firstChild);
@@ -2607,18 +2646,18 @@
               this._addLayer(overlays[i], i, true);
             }
           },
-          onAdd: function(map2) {
+          onAdd: function(map) {
             this._initLayout();
             this._update();
-            this._map = map2;
-            map2.on("zoomend", this._checkDisabledLayers, this);
+            this._map = map;
+            map.on("zoomend", this._checkDisabledLayers, this);
             for (var i = 0; i < this._layers.length; i++) {
               this._layers[i].layer.on("add remove", this._onLayerChange, this);
             }
             return this._container;
           },
-          addTo: function(map2) {
-            Control.prototype.addTo.call(this, map2);
+          addTo: function(map) {
+            Control.prototype.addTo.call(this, map);
             return this._expandIfNotCollapsed();
           },
           onRemove: function() {
@@ -2839,16 +2878,16 @@
             zoomOutText: "&#x2212;",
             zoomOutTitle: "Zoom out"
           },
-          onAdd: function(map2) {
+          onAdd: function(map) {
             var zoomName = "leaflet-control-zoom", container = create$1("div", zoomName + " leaflet-bar"), options = this.options;
             this._zoomInButton = this._createButton(options.zoomInText, options.zoomInTitle, zoomName + "-in", container, this._zoomIn);
             this._zoomOutButton = this._createButton(options.zoomOutText, options.zoomOutTitle, zoomName + "-out", container, this._zoomOut);
             this._updateDisabled();
-            map2.on("zoomend zoomlevelschange", this._updateDisabled, this);
+            map.on("zoomend zoomlevelschange", this._updateDisabled, this);
             return container;
           },
-          onRemove: function(map2) {
-            map2.off("zoomend zoomlevelschange", this._updateDisabled, this);
+          onRemove: function(map) {
+            map.off("zoomend zoomlevelschange", this._updateDisabled, this);
           },
           disable: function() {
             this._disabled = true;
@@ -2884,13 +2923,13 @@
             return link;
           },
           _updateDisabled: function() {
-            var map2 = this._map, className = "leaflet-disabled";
+            var map = this._map, className = "leaflet-disabled";
             removeClass(this._zoomInButton, className);
             removeClass(this._zoomOutButton, className);
-            if (this._disabled || map2._zoom === map2.getMinZoom()) {
+            if (this._disabled || map._zoom === map.getMinZoom()) {
               addClass(this._zoomOutButton, className);
             }
-            if (this._disabled || map2._zoom === map2.getMaxZoom()) {
+            if (this._disabled || map._zoom === map.getMaxZoom()) {
               addClass(this._zoomInButton, className);
             }
           }
@@ -2914,15 +2953,15 @@
             metric: true,
             imperial: true
           },
-          onAdd: function(map2) {
+          onAdd: function(map) {
             var className = "leaflet-control-scale", container = create$1("div", className), options = this.options;
             this._addScales(options, className + "-line", container);
-            map2.on(options.updateWhenIdle ? "moveend" : "move", this._update, this);
-            map2.whenReady(this._update, this);
+            map.on(options.updateWhenIdle ? "moveend" : "move", this._update, this);
+            map.whenReady(this._update, this);
             return container;
           },
-          onRemove: function(map2) {
-            map2.off(this.options.updateWhenIdle ? "moveend" : "move", this._update, this);
+          onRemove: function(map) {
+            map.off(this.options.updateWhenIdle ? "moveend" : "move", this._update, this);
           },
           _addScales: function(options, className, container) {
             if (options.metric) {
@@ -2933,8 +2972,8 @@
             }
           },
           _update: function() {
-            var map2 = this._map, y = map2.getSize().y / 2;
-            var maxMeters = map2.distance(map2.containerPointToLatLng([0, y]), map2.containerPointToLatLng([this.options.maxWidth, y]));
+            var map = this._map, y = map.getSize().y / 2;
+            var maxMeters = map.distance(map.containerPointToLatLng([0, y]), map.containerPointToLatLng([this.options.maxWidth, y]));
             this._updateScales(maxMeters);
           },
           _updateScales: function(maxMeters) {
@@ -2982,13 +3021,13 @@
             setOptions(this, options);
             this._attributions = {};
           },
-          onAdd: function(map2) {
-            map2.attributionControl = this;
+          onAdd: function(map) {
+            map.attributionControl = this;
             this._container = create$1("div", "leaflet-control-attribution");
             disableClickPropagation(this._container);
-            for (var i in map2._layers) {
-              if (map2._layers[i].getAttribution) {
-                this.addAttribution(map2._layers[i].getAttribution());
+            for (var i in map._layers) {
+              if (map._layers[i].getAttribution) {
+                this.addAttribution(map._layers[i].getAttribution());
               }
             }
             this._update();
@@ -3060,8 +3099,8 @@
         control.scale = scale;
         control.attribution = attribution;
         var Handler = Class.extend({
-          initialize: function(map2) {
-            this._map = map2;
+          initialize: function(map) {
+            this._map = map;
           },
           enable: function() {
             if (this._enabled) {
@@ -3083,8 +3122,8 @@
             return !!this._enabled;
           }
         });
-        Handler.addTo = function(map2, name) {
-          map2.addHandler(name, this);
+        Handler.addTo = function(map, name) {
+          map.addHandler(name, this);
           return this;
         };
         var Mixin = { Events };
@@ -3478,8 +3517,8 @@
             attribution: null,
             bubblingMouseEvents: true
           },
-          addTo: function(map2) {
-            map2.addLayer(this);
+          addTo: function(map) {
+            map.addLayer(this);
             return this;
           },
           remove: function() {
@@ -3506,25 +3545,25 @@
             return this.options.attribution;
           },
           _layerAdd: function(e) {
-            var map2 = e.target;
-            if (!map2.hasLayer(this)) {
+            var map = e.target;
+            if (!map.hasLayer(this)) {
               return;
             }
-            this._map = map2;
-            this._zoomAnimated = map2._zoomAnimated;
+            this._map = map;
+            this._zoomAnimated = map._zoomAnimated;
             if (this.getEvents) {
               var events = this.getEvents();
-              map2.on(events, this);
+              map.on(events, this);
               this.once("remove", function() {
-                map2.off(events, this);
+                map.off(events, this);
               }, this);
             }
-            this.onAdd(map2);
-            if (this.getAttribution && map2.attributionControl) {
-              map2.attributionControl.addAttribution(this.getAttribution());
+            this.onAdd(map);
+            if (this.getAttribution && map.attributionControl) {
+              map.attributionControl.addAttribution(this.getAttribution());
             }
             this.fire("add");
-            map2.fire("layeradd", { layer: this });
+            map.fire("layeradd", { layer: this });
           }
         });
         Map.include({
@@ -3658,11 +3697,11 @@
             }
             return this;
           },
-          onAdd: function(map2) {
-            this.eachLayer(map2.addLayer, map2);
+          onAdd: function(map) {
+            this.eachLayer(map.addLayer, map);
           },
-          onRemove: function(map2) {
-            this.eachLayer(map2.removeLayer, map2);
+          onRemove: function(map) {
+            this.eachLayer(map.removeLayer, map);
           },
           eachLayer: function(method, context) {
             for (var i in this._layers) {
@@ -3845,11 +3884,11 @@
             return this._draggable && this._draggable._moved;
           },
           _adjustPan: function(e) {
-            var marker2 = this._marker, map2 = marker2._map, speed = this._marker.options.autoPanSpeed, padding = this._marker.options.autoPanPadding, iconPos = getPosition(marker2._icon), bounds = map2.getPixelBounds(), origin = map2.getPixelOrigin();
+            var marker2 = this._marker, map = marker2._map, speed = this._marker.options.autoPanSpeed, padding = this._marker.options.autoPanPadding, iconPos = getPosition(marker2._icon), bounds = map.getPixelBounds(), origin = map.getPixelOrigin();
             var panBounds = toBounds(bounds.min._subtract(origin).add(padding), bounds.max._subtract(origin).subtract(padding));
             if (!panBounds.contains(iconPos)) {
               var movement = toPoint((Math.max(panBounds.max.x, iconPos.x) - panBounds.max.x) / (bounds.max.x - panBounds.max.x) - (Math.min(panBounds.min.x, iconPos.x) - panBounds.min.x) / (bounds.min.x - panBounds.min.x), (Math.max(panBounds.max.y, iconPos.y) - panBounds.max.y) / (bounds.max.y - panBounds.max.y) - (Math.min(panBounds.min.y, iconPos.y) - panBounds.min.y) / (bounds.min.y - panBounds.min.y)).multiplyBy(speed);
-              map2.panBy(movement, { animate: false });
+              map.panBy(movement, { animate: false });
               this._draggable._newPos._add(movement);
               this._draggable._startPos._add(movement);
               setPosition(marker2._icon, this._draggable._newPos);
@@ -3907,22 +3946,22 @@
             setOptions(this, options);
             this._latlng = toLatLng(latlng);
           },
-          onAdd: function(map2) {
-            this._zoomAnimated = this._zoomAnimated && map2.options.markerZoomAnimation;
+          onAdd: function(map) {
+            this._zoomAnimated = this._zoomAnimated && map.options.markerZoomAnimation;
             if (this._zoomAnimated) {
-              map2.on("zoomanim", this._animateZoom, this);
+              map.on("zoomanim", this._animateZoom, this);
             }
             this._initIcon();
             this.update();
           },
-          onRemove: function(map2) {
+          onRemove: function(map) {
             if (this.dragging && this.dragging.enabled()) {
               this.options.draggable = true;
               this.dragging.removeHooks();
             }
             delete this.dragging;
             if (this._zoomAnimated) {
-              map2.off("zoomanim", this._animateZoom, this);
+              map.off("zoomanim", this._animateZoom, this);
             }
             this._removeIcon();
             this._removeShadow();
@@ -4120,8 +4159,8 @@
             interactive: true,
             bubblingMouseEvents: true
           },
-          beforeAdd: function(map2) {
-            this._renderer = map2.getRenderer(this);
+          beforeAdd: function(map) {
+            this._renderer = map.getRenderer(this);
           },
           onAdd: function() {
             this._renderer._initPath(this);
@@ -4253,19 +4292,19 @@
           },
           setStyle: Path.prototype.setStyle,
           _project: function() {
-            var lng = this._latlng.lng, lat = this._latlng.lat, map2 = this._map, crs = map2.options.crs;
+            var lng = this._latlng.lng, lat = this._latlng.lat, map = this._map, crs = map.options.crs;
             if (crs.distance === Earth.distance) {
-              var d = Math.PI / 180, latR = this._mRadius / Earth.R / d, top = map2.project([lat + latR, lng]), bottom = map2.project([lat - latR, lng]), p = top.add(bottom).divideBy(2), lat2 = map2.unproject(p).lat, lngR = Math.acos((Math.cos(latR * d) - Math.sin(lat * d) * Math.sin(lat2 * d)) / (Math.cos(lat * d) * Math.cos(lat2 * d))) / d;
+              var d = Math.PI / 180, latR = this._mRadius / Earth.R / d, top = map.project([lat + latR, lng]), bottom = map.project([lat - latR, lng]), p = top.add(bottom).divideBy(2), lat2 = map.unproject(p).lat, lngR = Math.acos((Math.cos(latR * d) - Math.sin(lat * d) * Math.sin(lat2 * d)) / (Math.cos(lat * d) * Math.cos(lat2 * d))) / d;
               if (isNaN(lngR) || lngR === 0) {
                 lngR = latR / Math.cos(Math.PI / 180 * lat);
               }
-              this._point = p.subtract(map2.getPixelOrigin());
-              this._radius = isNaN(lngR) ? 0 : p.x - map2.project([lat2, lng - lngR]).x;
+              this._point = p.subtract(map.getPixelOrigin());
+              this._radius = isNaN(lngR) ? 0 : p.x - map.project([lat2, lng - lngR]).x;
               this._radiusY = p.y - top.y;
             } else {
               var latlng2 = crs.unproject(crs.project(this._latlng).subtract([this._mRadius, 0]));
-              this._point = map2.latLngToLayerPoint(this._latlng);
-              this._radius = this._point.x - map2.latLngToLayerPoint(latlng2).x;
+              this._point = map.latLngToLayerPoint(this._latlng);
+              this._radius = this._point.x - map.latLngToLayerPoint(latlng2).x;
             }
             this._updateBounds();
           }
@@ -5001,24 +5040,24 @@
             setOptions(this, options);
             this._source = source;
           },
-          onAdd: function(map2) {
-            this._zoomAnimated = map2._zoomAnimated;
+          onAdd: function(map) {
+            this._zoomAnimated = map._zoomAnimated;
             if (!this._container) {
               this._initLayout();
             }
-            if (map2._fadeAnimated) {
+            if (map._fadeAnimated) {
               setOpacity(this._container, 0);
             }
             clearTimeout(this._removeTimeout);
             this.getPane().appendChild(this._container);
             this.update();
-            if (map2._fadeAnimated) {
+            if (map._fadeAnimated) {
               setOpacity(this._container, 1);
             }
             this.bringToFront();
           },
-          onRemove: function(map2) {
-            if (map2._fadeAnimated) {
+          onRemove: function(map) {
+            if (map._fadeAnimated) {
               setOpacity(this._container, 0);
               this._removeTimeout = setTimeout(bind(remove, void 0, this._container), 200);
             } else {
@@ -5156,13 +5195,13 @@
             closeOnEscapeKey: true,
             className: ""
           },
-          openOn: function(map2) {
-            map2.openPopup(this);
+          openOn: function(map) {
+            map.openPopup(this);
             return this;
           },
-          onAdd: function(map2) {
-            DivOverlay.prototype.onAdd.call(this, map2);
-            map2.fire("popupopen", { popup: this });
+          onAdd: function(map) {
+            DivOverlay.prototype.onAdd.call(this, map);
+            map.fire("popupopen", { popup: this });
             if (this._source) {
               this._source.fire("popupopen", { popup: this }, true);
               if (!(this._source instanceof Path)) {
@@ -5170,9 +5209,9 @@
               }
             }
           },
-          onRemove: function(map2) {
-            DivOverlay.prototype.onRemove.call(this, map2);
-            map2.fire("popupclose", { popup: this });
+          onRemove: function(map) {
+            DivOverlay.prototype.onRemove.call(this, map);
+            map.fire("popupclose", { popup: this });
             if (this._source) {
               this._source.fire("popupclose", { popup: this }, true);
               if (!(this._source instanceof Path)) {
@@ -5241,9 +5280,9 @@
             if (this._map._panAnim) {
               this._map._panAnim.stop();
             }
-            var map2 = this._map, marginBottom = parseInt(getStyle(this._container, "marginBottom"), 10) || 0, containerHeight = this._container.offsetHeight + marginBottom, containerWidth = this._containerWidth, layerPos = new Point(this._containerLeft, -containerHeight - this._containerBottom);
+            var map = this._map, marginBottom = parseInt(getStyle(this._container, "marginBottom"), 10) || 0, containerHeight = this._container.offsetHeight + marginBottom, containerWidth = this._containerWidth, layerPos = new Point(this._containerLeft, -containerHeight - this._containerBottom);
             layerPos._add(getPosition(this._container));
-            var containerPos = map2.layerPointToContainerPoint(layerPos), padding = toPoint(this.options.autoPanPadding), paddingTL = toPoint(this.options.autoPanPaddingTopLeft || padding), paddingBR = toPoint(this.options.autoPanPaddingBottomRight || padding), size = map2.getSize(), dx = 0, dy = 0;
+            var containerPos = map.layerPointToContainerPoint(layerPos), padding = toPoint(this.options.autoPanPadding), paddingTL = toPoint(this.options.autoPanPaddingTopLeft || padding), paddingBR = toPoint(this.options.autoPanPaddingBottomRight || padding), size = map.getSize(), dx = 0, dy = 0;
             if (containerPos.x + containerWidth + paddingBR.x > size.x) {
               dx = containerPos.x + containerWidth - size.x + paddingBR.x;
             }
@@ -5257,7 +5296,7 @@
               dy = containerPos.y - paddingTL.y;
             }
             if (dx || dy) {
-              map2.fire("autopanstart").panBy([dx, dy]);
+              map.fire("autopanstart").panBy([dx, dy]);
             }
           },
           _onCloseButtonClick: function(e) {
@@ -5411,17 +5450,17 @@
             interactive: false,
             opacity: 0.9
           },
-          onAdd: function(map2) {
-            DivOverlay.prototype.onAdd.call(this, map2);
+          onAdd: function(map) {
+            DivOverlay.prototype.onAdd.call(this, map);
             this.setOpacity(this.options.opacity);
-            map2.fire("tooltipopen", { tooltip: this });
+            map.fire("tooltipopen", { tooltip: this });
             if (this._source) {
               this._source.fire("tooltipopen", { tooltip: this }, true);
             }
           },
-          onRemove: function(map2) {
-            DivOverlay.prototype.onRemove.call(this, map2);
-            map2.fire("tooltipclose", { tooltip: this });
+          onRemove: function(map) {
+            DivOverlay.prototype.onRemove.call(this, map);
+            map.fire("tooltipclose", { tooltip: this });
             if (this._source) {
               this._source.fire("tooltipclose", { tooltip: this }, true);
             }
@@ -5447,7 +5486,7 @@
           _adjustPan: function() {
           },
           _setPosition: function(pos) {
-            var subX, subY, map2 = this._map, container = this._container, centerPoint = map2.latLngToContainerPoint(map2.getCenter()), tooltipPoint = map2.layerPointToContainerPoint(pos), direction = this.options.direction, tooltipWidth = container.offsetWidth, tooltipHeight = container.offsetHeight, offset = toPoint(this.options.offset), anchor = this._getAnchor();
+            var subX, subY, map = this._map, container = this._container, centerPoint = map.latLngToContainerPoint(map.getCenter()), tooltipPoint = map.layerPointToContainerPoint(pos), direction = this.options.direction, tooltipWidth = container.offsetWidth, tooltipHeight = container.offsetHeight, offset = toPoint(this.options.offset), anchor = this._getAnchor();
             if (direction === "top") {
               subX = tooltipWidth / 2;
               subY = tooltipHeight;
@@ -5688,13 +5727,13 @@
             this._resetView();
             this._update();
           },
-          beforeAdd: function(map2) {
-            map2._addZoomLimit(this);
+          beforeAdd: function(map) {
+            map._addZoomLimit(this);
           },
-          onRemove: function(map2) {
+          onRemove: function(map) {
             this._removeAllTiles();
             remove(this._container);
-            map2._removeZoomLimit(this);
+            map._removeZoomLimit(this);
             this._container = null;
             this._tileZoom = void 0;
           },
@@ -5842,14 +5881,14 @@
                 delete this._levels[z];
               }
             }
-            var level = this._levels[zoom2], map2 = this._map;
+            var level = this._levels[zoom2], map = this._map;
             if (!level) {
               level = this._levels[zoom2] = {};
               level.el = create$1("div", "leaflet-tile-container leaflet-zoom-animated", this._container);
               level.el.style.zIndex = maxZoom;
-              level.origin = map2.project(map2.unproject(map2.getPixelOrigin()), zoom2).round();
+              level.origin = map.project(map.unproject(map.getPixelOrigin()), zoom2).round();
               level.zoom = zoom2;
-              this._setZoomTransform(level, map2.getCenter(), map2.getZoom());
+              this._setZoomTransform(level, map.getCenter(), map.getZoom());
               falseFn(level.el.offsetWidth);
               this._onCreateLevel(level);
             }
@@ -5999,18 +6038,18 @@
             }
           },
           _resetGrid: function() {
-            var map2 = this._map, crs = map2.options.crs, tileSize = this._tileSize = this.getTileSize(), tileZoom = this._tileZoom;
+            var map = this._map, crs = map.options.crs, tileSize = this._tileSize = this.getTileSize(), tileZoom = this._tileZoom;
             var bounds = this._map.getPixelWorldBounds(this._tileZoom);
             if (bounds) {
               this._globalTileRange = this._pxBoundsToTileRange(bounds);
             }
             this._wrapX = crs.wrapLng && !this.options.noWrap && [
-              Math.floor(map2.project([0, crs.wrapLng[0]], tileZoom).x / tileSize.x),
-              Math.ceil(map2.project([0, crs.wrapLng[1]], tileZoom).x / tileSize.y)
+              Math.floor(map.project([0, crs.wrapLng[0]], tileZoom).x / tileSize.x),
+              Math.ceil(map.project([0, crs.wrapLng[1]], tileZoom).x / tileSize.y)
             ];
             this._wrapY = crs.wrapLat && !this.options.noWrap && [
-              Math.floor(map2.project([crs.wrapLat[0], 0], tileZoom).y / tileSize.x),
-              Math.ceil(map2.project([crs.wrapLat[1], 0], tileZoom).y / tileSize.y)
+              Math.floor(map.project([crs.wrapLat[0], 0], tileZoom).y / tileSize.x),
+              Math.ceil(map.project([crs.wrapLat[1], 0], tileZoom).y / tileSize.y)
             ];
           },
           _onMoveEnd: function() {
@@ -6020,17 +6059,17 @@
             this._update();
           },
           _getTiledPixelBounds: function(center) {
-            var map2 = this._map, mapZoom = map2._animatingZoom ? Math.max(map2._animateToZoom, map2.getZoom()) : map2.getZoom(), scale2 = map2.getZoomScale(mapZoom, this._tileZoom), pixelCenter = map2.project(center, this._tileZoom).floor(), halfSize = map2.getSize().divideBy(scale2 * 2);
+            var map = this._map, mapZoom = map._animatingZoom ? Math.max(map._animateToZoom, map.getZoom()) : map.getZoom(), scale2 = map.getZoomScale(mapZoom, this._tileZoom), pixelCenter = map.project(center, this._tileZoom).floor(), halfSize = map.getSize().divideBy(scale2 * 2);
             return new Bounds(pixelCenter.subtract(halfSize), pixelCenter.add(halfSize));
           },
           _update: function(center) {
-            var map2 = this._map;
-            if (!map2) {
+            var map = this._map;
+            if (!map) {
               return;
             }
-            var zoom2 = this._clampZoom(map2.getZoom());
+            var zoom2 = this._clampZoom(map.getZoom());
             if (center === void 0) {
-              center = map2.getCenter();
+              center = map.getCenter();
             }
             if (this._tileZoom === void 0) {
               return;
@@ -6097,7 +6136,7 @@
             return this._tileCoordsToBounds(this._keyToTileCoords(key));
           },
           _tileCoordsToNwSe: function(coords) {
-            var map2 = this._map, tileSize = this.getTileSize(), nwPoint = coords.scaleBy(tileSize), sePoint = nwPoint.add(tileSize), nw = map2.unproject(nwPoint, coords.z), se = map2.unproject(sePoint, coords.z);
+            var map = this._map, tileSize = this.getTileSize(), nwPoint = coords.scaleBy(tileSize), sePoint = nwPoint.add(tileSize), nw = map.unproject(nwPoint, coords.z), se = map.unproject(sePoint, coords.z);
             return [nw, se];
           },
           _tileCoordsToBounds: function(coords) {
@@ -6387,12 +6426,12 @@
             wmsParams.height = tileSize.y * realRetina;
             this.wmsParams = wmsParams;
           },
-          onAdd: function(map2) {
-            this._crs = this.options.crs || map2.options.crs;
+          onAdd: function(map) {
+            this._crs = this.options.crs || map.options.crs;
             this._wmsVersion = parseFloat(this.wmsParams.version);
             var projectionKey = this._wmsVersion >= 1.3 ? "crs" : "srs";
             this.wmsParams[projectionKey] = this._crs.code;
-            TileLayer.prototype.onAdd.call(this, map2);
+            TileLayer.prototype.onAdd.call(this, map);
           },
           getTileUrl: function(coords) {
             var tileBounds = this._tileCoordsToNwSe(coords), crs = this._crs, bounds = toBounds(crs.project(tileBounds[0]), crs.project(tileBounds[1])), min = bounds.min, max = bounds.max, bbox = (this._wmsVersion >= 1.3 && this._crs === EPSG4326 ? [min.y, min.x, max.y, max.x] : [min.x, min.y, max.x, max.y]).join(","), url = TileLayer.prototype.getTileUrl.call(this, coords);
@@ -7105,12 +7144,12 @@
           boxZoom: true
         });
         var BoxZoom = Handler.extend({
-          initialize: function(map2) {
-            this._map = map2;
-            this._container = map2._container;
-            this._pane = map2._panes.overlayPane;
+          initialize: function(map) {
+            this._map = map;
+            this._container = map._container;
+            this._pane = map._panes.overlayPane;
             this._resetStateTimeout = 0;
-            map2.on("unload", this._destroy, this);
+            map.on("unload", this._destroy, this);
           },
           addHooks: function() {
             on(this._container, "mousedown", this._onMouseDown, this);
@@ -7209,11 +7248,11 @@
             this._map.off("dblclick", this._onDoubleClick, this);
           },
           _onDoubleClick: function(e) {
-            var map2 = this._map, oldZoom = map2.getZoom(), delta = map2.options.zoomDelta, zoom2 = e.originalEvent.shiftKey ? oldZoom - delta : oldZoom + delta;
-            if (map2.options.doubleClickZoom === "center") {
-              map2.setZoom(zoom2);
+            var map = this._map, oldZoom = map.getZoom(), delta = map.options.zoomDelta, zoom2 = e.originalEvent.shiftKey ? oldZoom - delta : oldZoom + delta;
+            if (map.options.doubleClickZoom === "center") {
+              map.setZoom(zoom2);
             } else {
-              map2.setZoomAround(e.containerPoint, zoom2);
+              map.setZoomAround(e.containerPoint, zoom2);
             }
           }
         });
@@ -7230,18 +7269,18 @@
         var Drag = Handler.extend({
           addHooks: function() {
             if (!this._draggable) {
-              var map2 = this._map;
-              this._draggable = new Draggable(map2._mapPane, map2._container);
+              var map = this._map;
+              this._draggable = new Draggable(map._mapPane, map._container);
               this._draggable.on({
                 dragstart: this._onDragStart,
                 drag: this._onDrag,
                 dragend: this._onDragEnd
               }, this);
               this._draggable.on("predrag", this._onPreDragLimit, this);
-              if (map2.options.worldCopyJump) {
+              if (map.options.worldCopyJump) {
                 this._draggable.on("predrag", this._onPreDragWrap, this);
-                map2.on("zoomend", this._onZoomEnd, this);
-                map2.whenReady(this._onZoomEnd, this);
+                map.on("zoomend", this._onZoomEnd, this);
+                map.whenReady(this._onZoomEnd, this);
               }
             }
             addClass(this._map._container, "leaflet-grab leaflet-touch-drag");
@@ -7261,8 +7300,8 @@
             return this._draggable && this._draggable._moving;
           },
           _onDragStart: function() {
-            var map2 = this._map;
-            map2._stop();
+            var map = this._map;
+            map._stop();
             if (this._map.options.maxBounds && this._map.options.maxBoundsViscosity) {
               var bounds = toLatLngBounds(this._map.options.maxBounds);
               this._offsetLimit = toBounds(this._map.latLngToContainerPoint(bounds.getNorthWest()).multiplyBy(-1), this._map.latLngToContainerPoint(bounds.getSouthEast()).multiplyBy(-1).add(this._map.getSize()));
@@ -7270,8 +7309,8 @@
             } else {
               this._offsetLimit = null;
             }
-            map2.fire("movestart").fire("dragstart");
-            if (map2.options.inertia) {
+            map.fire("movestart").fire("dragstart");
+            if (map.options.inertia) {
               this._positions = [];
               this._times = [];
             }
@@ -7325,19 +7364,19 @@
             this._draggable._newPos.x = newX;
           },
           _onDragEnd: function(e) {
-            var map2 = this._map, options = map2.options, noInertia = !options.inertia || this._times.length < 2;
-            map2.fire("dragend", e);
+            var map = this._map, options = map.options, noInertia = !options.inertia || this._times.length < 2;
+            map.fire("dragend", e);
             if (noInertia) {
-              map2.fire("moveend");
+              map.fire("moveend");
             } else {
               this._prunePositions(+new Date());
               var direction = this._lastPos.subtract(this._positions[0]), duration = (this._lastTime - this._times[0]) / 1e3, ease = options.easeLinearity, speedVector = direction.multiplyBy(ease / duration), speed = speedVector.distanceTo([0, 0]), limitedSpeed = Math.min(options.inertiaMaxSpeed, speed), limitedSpeedVector = speedVector.multiplyBy(limitedSpeed / speed), decelerationDuration = limitedSpeed / (options.inertiaDeceleration * ease), offset = limitedSpeedVector.multiplyBy(-decelerationDuration / 2).round();
               if (!offset.x && !offset.y) {
-                map2.fire("moveend");
+                map.fire("moveend");
               } else {
-                offset = map2._limitOffset(offset, map2.options.maxBounds);
+                offset = map._limitOffset(offset, map.options.maxBounds);
                 requestAnimFrame(function() {
-                  map2.panBy(offset, {
+                  map.panBy(offset, {
                     duration: decelerationDuration,
                     easeLinearity: ease,
                     noMoveStart: true,
@@ -7362,10 +7401,10 @@
             zoomIn: [187, 107, 61, 171],
             zoomOut: [189, 109, 54, 173]
           },
-          initialize: function(map2) {
-            this._map = map2;
-            this._setPanDelta(map2.options.keyboardPanDelta);
-            this._setZoomDelta(map2.options.zoomDelta);
+          initialize: function(map) {
+            this._map = map;
+            this._setPanDelta(map.options.keyboardPanDelta);
+            this._setZoomDelta(map.options.zoomDelta);
           },
           addHooks: function() {
             var container = this._map._container;
@@ -7444,22 +7483,22 @@
             if (e.altKey || e.ctrlKey || e.metaKey) {
               return;
             }
-            var key = e.keyCode, map2 = this._map, offset;
+            var key = e.keyCode, map = this._map, offset;
             if (key in this._panKeys) {
-              if (!map2._panAnim || !map2._panAnim._inProgress) {
+              if (!map._panAnim || !map._panAnim._inProgress) {
                 offset = this._panKeys[key];
                 if (e.shiftKey) {
                   offset = toPoint(offset).multiplyBy(3);
                 }
-                map2.panBy(offset);
-                if (map2.options.maxBounds) {
-                  map2.panInsideBounds(map2.options.maxBounds);
+                map.panBy(offset);
+                if (map.options.maxBounds) {
+                  map.panInsideBounds(map.options.maxBounds);
                 }
               }
             } else if (key in this._zoomKeys) {
-              map2.setZoom(map2.getZoom() + (e.shiftKey ? 3 : 1) * this._zoomKeys[key]);
-            } else if (key === 27 && map2._popup && map2._popup.options.closeOnEscapeKey) {
-              map2.closePopup();
+              map.setZoom(map.getZoom() + (e.shiftKey ? 3 : 1) * this._zoomKeys[key]);
+            } else if (key === 27 && map._popup && map._popup.options.closeOnEscapeKey) {
+              map.closePopup();
             } else {
               return;
             }
@@ -7494,18 +7533,18 @@
             stop(e);
           },
           _performZoom: function() {
-            var map2 = this._map, zoom2 = map2.getZoom(), snap = this._map.options.zoomSnap || 0;
-            map2._stop();
-            var d2 = this._delta / (this._map.options.wheelPxPerZoomLevel * 4), d3 = 4 * Math.log(2 / (1 + Math.exp(-Math.abs(d2)))) / Math.LN2, d4 = snap ? Math.ceil(d3 / snap) * snap : d3, delta = map2._limitZoom(zoom2 + (this._delta > 0 ? d4 : -d4)) - zoom2;
+            var map = this._map, zoom2 = map.getZoom(), snap = this._map.options.zoomSnap || 0;
+            map._stop();
+            var d2 = this._delta / (this._map.options.wheelPxPerZoomLevel * 4), d3 = 4 * Math.log(2 / (1 + Math.exp(-Math.abs(d2)))) / Math.LN2, d4 = snap ? Math.ceil(d3 / snap) * snap : d3, delta = map._limitZoom(zoom2 + (this._delta > 0 ? d4 : -d4)) - zoom2;
             this._delta = 0;
             this._startTime = null;
             if (!delta) {
               return;
             }
-            if (map2.options.scrollWheelZoom === "center") {
-              map2.setZoom(zoom2 + delta);
+            if (map.options.scrollWheelZoom === "center") {
+              map.setZoom(zoom2 + delta);
             } else {
-              map2.setZoomAround(this._lastMousePos, zoom2 + delta);
+              map.setZoomAround(this._lastMousePos, zoom2 + delta);
             }
           }
         });
@@ -7600,21 +7639,21 @@
             off(this._map._container, "touchstart", this._onTouchStart, this);
           },
           _onTouchStart: function(e) {
-            var map2 = this._map;
-            if (!e.touches || e.touches.length !== 2 || map2._animatingZoom || this._zooming) {
+            var map = this._map;
+            if (!e.touches || e.touches.length !== 2 || map._animatingZoom || this._zooming) {
               return;
             }
-            var p1 = map2.mouseEventToContainerPoint(e.touches[0]), p2 = map2.mouseEventToContainerPoint(e.touches[1]);
-            this._centerPoint = map2.getSize()._divideBy(2);
-            this._startLatLng = map2.containerPointToLatLng(this._centerPoint);
-            if (map2.options.touchZoom !== "center") {
-              this._pinchStartLatLng = map2.containerPointToLatLng(p1.add(p2)._divideBy(2));
+            var p1 = map.mouseEventToContainerPoint(e.touches[0]), p2 = map.mouseEventToContainerPoint(e.touches[1]);
+            this._centerPoint = map.getSize()._divideBy(2);
+            this._startLatLng = map.containerPointToLatLng(this._centerPoint);
+            if (map.options.touchZoom !== "center") {
+              this._pinchStartLatLng = map.containerPointToLatLng(p1.add(p2)._divideBy(2));
             }
             this._startDist = p1.distanceTo(p2);
-            this._startZoom = map2.getZoom();
+            this._startZoom = map.getZoom();
             this._moved = false;
             this._zooming = true;
-            map2._stop();
+            map._stop();
             on(document, "touchmove", this._onTouchMove, this);
             on(document, "touchend", this._onTouchEnd, this);
             preventDefault(e);
@@ -7623,12 +7662,12 @@
             if (!e.touches || e.touches.length !== 2 || !this._zooming) {
               return;
             }
-            var map2 = this._map, p1 = map2.mouseEventToContainerPoint(e.touches[0]), p2 = map2.mouseEventToContainerPoint(e.touches[1]), scale2 = p1.distanceTo(p2) / this._startDist;
-            this._zoom = map2.getScaleZoom(scale2, this._startZoom);
-            if (!map2.options.bounceAtZoomLimits && (this._zoom < map2.getMinZoom() && scale2 < 1 || this._zoom > map2.getMaxZoom() && scale2 > 1)) {
-              this._zoom = map2._limitZoom(this._zoom);
+            var map = this._map, p1 = map.mouseEventToContainerPoint(e.touches[0]), p2 = map.mouseEventToContainerPoint(e.touches[1]), scale2 = p1.distanceTo(p2) / this._startDist;
+            this._zoom = map.getScaleZoom(scale2, this._startZoom);
+            if (!map.options.bounceAtZoomLimits && (this._zoom < map.getMinZoom() && scale2 < 1 || this._zoom > map.getMaxZoom() && scale2 > 1)) {
+              this._zoom = map._limitZoom(this._zoom);
             }
-            if (map2.options.touchZoom === "center") {
+            if (map.options.touchZoom === "center") {
               this._center = this._startLatLng;
               if (scale2 === 1) {
                 return;
@@ -7638,14 +7677,14 @@
               if (scale2 === 1 && delta.x === 0 && delta.y === 0) {
                 return;
               }
-              this._center = map2.unproject(map2.project(this._pinchStartLatLng, this._zoom).subtract(delta), this._zoom);
+              this._center = map.unproject(map.project(this._pinchStartLatLng, this._zoom).subtract(delta), this._zoom);
             }
             if (!this._moved) {
-              map2._moveStart(true, false);
+              map._moveStart(true, false);
               this._moved = true;
             }
             cancelAnimFrame(this._animRequest);
-            var moveFn = bind(map2._move, map2, this._center, this._zoom, { pinch: true, round: false });
+            var moveFn = bind(map._move, map, this._center, this._zoom, { pinch: true, round: false });
             this._animRequest = requestAnimFrame(moveFn, this, true);
             preventDefault(e);
           },
@@ -10463,8 +10502,8 @@
           }
         ]
       };
-      var getBoundaryStyleFunction = (map2) => (feature) => {
-        const wt = map2.getZoom() / 4;
+      var getBoundaryStyleFunction = (map) => (feature) => {
+        const wt = map.getZoom() / 4;
         switch (feature.properties.boundary) {
           case "disputed":
             return {
@@ -10478,12 +10517,12 @@
             };
         }
       };
-      function addIndiaBoundaries2(map2) {
+      function addIndiaBoundaries(map) {
         L.geoJSON(indiaBoundaryLines, {
-          style: getBoundaryStyleFunction(map2)
-        }).addTo(map2);
+          style: getBoundaryStyleFunction(map)
+        }).addTo(map);
       }
-      module.exports = addIndiaBoundaries2;
+      module.exports = addIndiaBoundaries;
     }
   });
 
@@ -10491,11 +10530,11 @@
   var require_constants = __commonJS({
     "ns-hugo:/__w/map-kerala/map-kerala/site/assets/constants.js"(exports, module) {
       var OVERPASS_URL = "https://overpass-api.de/api/interpreter";
-      var KERALA_BOUNDS2 = [
+      var KERALA_BOUNDS = [
         [7.477, 78.234],
         [13.5806, 74.2676]
       ];
-      var MIN_ZOOM2 = 7;
+      var MIN_ZOOM = 7;
       var QUERIES = {
         "Government Offices": `"office"="government"`,
         Hospitals: `"amenity"="hospital"`,
@@ -10530,8 +10569,8 @@
         "Free WiFi": `"wifi"`
       };
       module.exports = {
-        KERALA_BOUNDS: KERALA_BOUNDS2,
-        MIN_ZOOM: MIN_ZOOM2,
+        KERALA_BOUNDS,
+        MIN_ZOOM,
         OVERPASS_URL,
         QUERIES
       };
@@ -10577,9 +10616,9 @@
           }
         }();
         var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
-        function addMapEntry(map2, pair) {
-          map2.set(pair[0], pair[1]);
-          return map2;
+        function addMapEntry(map, pair) {
+          map.set(pair[0], pair[1]);
+          return map;
         }
         function addSetEntry(set, value) {
           set.add(value);
@@ -10663,9 +10702,9 @@
           }
           return result;
         }
-        function mapToArray(map2) {
-          var index = -1, result = Array(map2.size);
-          map2.forEach(function(value, key) {
+        function mapToArray(map) {
+          var index = -1, result = Array(map.size);
+          map.forEach(function(value, key) {
             result[++index] = [key, value];
           });
           return result;
@@ -11226,9 +11265,9 @@
           var buffer = isDeep ? cloneArrayBuffer(dataView.buffer) : dataView.buffer;
           return new dataView.constructor(buffer, dataView.byteOffset, dataView.byteLength);
         }
-        function cloneMap(map2, isDeep, cloneFunc) {
-          var array = isDeep ? cloneFunc(mapToArray(map2), true) : mapToArray(map2);
-          return arrayReduce(array, addMapEntry, new map2.constructor());
+        function cloneMap(map, isDeep, cloneFunc) {
+          var array = isDeep ? cloneFunc(mapToArray(map), true) : mapToArray(map);
+          return arrayReduce(array, addMapEntry, new map.constructor());
         }
         function cloneRegExp(regexp) {
           var result = new regexp.constructor(regexp.source, reFlags.exec(regexp));
@@ -11452,8 +11491,8 @@
           result = result === iteratee ? baseIteratee : result;
           return arguments.length ? result(arguments[0], arguments[1]) : result;
         }
-        function getMapData(map2, key) {
-          var data = map2.__data__;
+        function getMapData(map, key) {
+          var data = map.__data__;
           return isKeyable(key) ? data[typeof key == "string" ? "string" : "hash"] : data.map;
         }
         function getMatchData(object) {
@@ -13108,7 +13147,7 @@
   var require_map_utils = __commonJS({
     "ns-hugo:/__w/map-kerala/map-kerala/site/assets/map-utils.js"(exports, module) {
       var osmtogeojson = require_osmtogeojson();
-      var L3 = require_leaflet_src();
+      var L2 = require_leaflet_src();
       var { QUERIES } = require_constants();
       var { OVERPASS_URL } = require_constants();
       var { fetchJSONWithUrlSearchParams, isEmptyObject } = require_utils();
@@ -13123,11 +13162,11 @@
             (._;>;);
             out geom;`;
       };
-      var fetchAndStore = async (qid, feature) => {
+      var fetchAndStore = (qid, feature) => __async(exports, null, function* () {
         const query = getQuery(qid, feature);
         return fetchJSONWithUrlSearchParams(OVERPASS_URL, { data: query }).then((data) => {
           const geojson = osmtogeojson(data);
-          const mapLayer = L3.geoJSON(geojson, { color: "blue" });
+          const mapLayer = L2.geoJSON(geojson, { color: "blue" });
           if (isEmptyObject(mapLayer.getBounds())) {
             mapDataStore[`${qid}#${feature}`] = {
               geojson: "USELESS",
@@ -13143,44 +13182,44 @@
             };
           }
         });
-      };
-      var expect2 = async (qid, feature) => {
-        if (available2(qid, feature)) {
+      });
+      var expect = (qid, feature) => __async(exports, null, function* () {
+        if (available(qid, feature)) {
           return true;
         } else {
           return fetchAndStore(qid, feature);
         }
-      };
-      var available2 = (qid, feature) => mapDataStore.hasOwnProperty(`${qid}#${feature}`);
-      var expectSearch2 = async () => {
+      });
+      var available = (qid, feature) => mapDataStore.hasOwnProperty(`${qid}#${feature}`);
+      var expectSearch = () => __async(exports, null, function* () {
         if (mapDataStore.hasOwnProperty("overview"))
           return;
         return fetch("/data.json").then((res) => res.json()).then((data) => mapDataStore.overview = data).then(() => createOverview());
-      };
+      });
       var createOverview = () => {
         if (mapDataStore.hasOwnProperty("byQid"))
           return;
         mapDataStore.byQid = {};
         for (const district of Object.keys(mapDataStore.overview)) {
           for (const el of mapDataStore.overview[district]) {
-            mapDataStore.byQid[el.qid] = { ...el, district };
+            mapDataStore.byQid[el.qid] = __spreadProps(__spreadValues({}, el), { district });
           }
         }
       };
-      var getLayer2 = (qid, feature) => mapDataStore[`${qid}#${feature}`].mapLayer;
-      var getGeojson2 = (qid, feature) => mapDataStore[`${qid}#${feature}`].geojson;
-      var getOverview2 = (qid) => mapDataStore.byQid[qid];
-      var getAllOverview2 = () => mapDataStore.byQid;
-      var isValidQid2 = (maybeQid) => mapDataStore.byQid.hasOwnProperty(maybeQid);
+      var getLayer = (qid, feature) => mapDataStore[`${qid}#${feature}`].mapLayer;
+      var getGeojson = (qid, feature) => mapDataStore[`${qid}#${feature}`].geojson;
+      var getOverview = (qid) => mapDataStore.byQid[qid];
+      var getAllOverview = () => mapDataStore.byQid;
+      var isValidQid = (maybeQid) => mapDataStore.byQid.hasOwnProperty(maybeQid);
       module.exports = {
-        expect: expect2,
-        available: available2,
-        getLayer: getLayer2,
-        getOverview: getOverview2,
-        getGeojson: getGeojson2,
-        getAllOverview: getAllOverview2,
-        expectSearch: expectSearch2,
-        isValidQid: isValidQid2
+        expect,
+        available,
+        getLayer,
+        getOverview,
+        getGeojson,
+        getAllOverview,
+        expectSearch,
+        isValidQid
       };
     }
   });
@@ -13209,7 +13248,7 @@
       ].join("&");
       var EN_WIKI_API = "https://en.wikipedia.org/api/rest_v1";
       var ML_WIKI_API = "https://ml.wikipedia.org/api/rest_v1";
-      var fetchWikipediaPageByQid2 = (qid) => {
+      var fetchWikipediaPageByQid = (qid) => {
         return fetch(`${WIKIDATA_API}?${WIKIDATA_QUERY_BASE}&ids=${qid}`, {
           headers: wikiReqHeaders
         }).then((res) => res.json()).then((data) => {
@@ -13217,7 +13256,7 @@
         }).then(() => hydrateWiki(qid));
       };
       var getAPI = (wikiname) => ({ mlwiki: ML_WIKI_API, enwiki: EN_WIKI_API })[wikiname];
-      var hydrateWiki = async (qid) => {
+      var hydrateWiki = (qid) => __async(exports, null, function* () {
         const siteLinks = wikiStore.wd[qid].entities[qid].sitelinks;
         wikiStore.wp[qid] = {};
         const requests = [];
@@ -13229,173 +13268,179 @@
           });
           requests.push(req);
         });
-        await Promise.all(requests);
-      };
-      var retrieveWikiPage2 = (qid) => {
+        yield Promise.all(requests);
+      });
+      var retrieveWikiPage = (qid) => {
         return wikiStore.wp[qid];
       };
       module.exports = {
-        fetchWikipediaPageByQid: fetchWikipediaPageByQid2,
-        retrieveWikiPage: retrieveWikiPage2
+        fetchWikipediaPageByQid,
+        retrieveWikiPage
       };
     }
   });
 
   // <stdin>
-  var L2 = require_leaflet_src();
-  var addIndiaBoundaries = require_india_boundaries();
-  var { KERALA_BOUNDS, MIN_ZOOM } = require_constants();
-  var {
-    expect,
-    available,
-    getLayer,
-    getOverview,
-    expectSearch,
-    getAllOverview,
-    isValidQid,
-    getGeojson
-  } = require_map_utils();
-  var { fetchWikipediaPageByQid, retrieveWikiPage } = require_wiki_utils();
-  var map = L2.map("map", {
-    minZoom: MIN_ZOOM,
-    maxBoundsViscosity: 0.9
-  }).fitBounds(KERALA_BOUNDS);
-  L2.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxBounds: KERALA_BOUNDS,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map);
-  addIndiaBoundaries(map);
-  var state = {
-    qid: document.querySelector("[data-mk-key=qid]").textContent.trim(),
-    feature: "Boundaries",
-    len: document.querySelector("[data-mk-key=len]").textContent.trim(),
-    displayedLayers: [],
-    searchSetup: false
-  };
-  var setQid = (qid) => {
-    setQidExceptUrlChange(qid);
-    urlChangeRequired();
-  };
-  var setQidExceptUrlChange = (qid) => {
-    state.qid = qid;
-    const { len, lml, urlpath, district } = getOverview(qid);
-    state.len = len;
-    state.lml = lml;
-    state.district = district;
-    state.urlpath = urlpath;
-    mapChangeRequired();
-    wikiChangeRequired();
-    skeletonChangeRequired();
-  };
-  var setFeature = (feature) => {
-    state.feature = feature;
-    configureButton = document.getElementById("configuration");
-    configureButton.textContent = feature;
-    mapChangeRequired();
-  };
-  var startJSONDownload = (filename, data) => {
-    const string = JSON.stringify(data);
-    const bytes = new TextEncoder().encode(string);
-    const blob = new Blob([bytes], { type: "application/json;charset=utf-8" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = filename;
-    a.click();
-  };
-  var downloadButton = document.querySelector("#download");
-  downloadButton.addEventListener("click", () => {
-    startJSONDownload(`${state.len} - ${state.feature}.geojson`, getGeojson(state.qid, state.feature));
-  });
-  var disableDownload = () => downloadButton.disabled = true;
-  var enableDownload = () => downloadButton.disabled = false;
-  var spinner = document.querySelector("[role=status]");
-  var showSpinner = () => spinner.style.visibility = "visible";
-  var hideSpinner = () => spinner.style.visibility = "hidden";
-  var showUselessWarning = () => alert("Sorry, no data available for that.");
-  var mapChangeRequired = async () => {
-    showSpinner();
-    state.displayedLayers.forEach((oldLayer) => map.removeLayer(oldLayer));
-    disableDownload();
-    await expect(state.qid, state.feature);
-    if (!available(state.qid, state.feature))
-      return;
-    const layer = getLayer(state.qid, state.feature);
-    if (layer === "USELESS") {
-      hideSpinner();
-      showUselessWarning();
-    } else {
-      state.displayedLayers = [layer];
-      map.addLayer(layer);
-      map.flyTo(layer.getBounds().getCenter(), 12);
-      hideSpinner();
-      enableDownload();
+  var require_stdin = __commonJS({
+    "<stdin>"(exports) {
+      var L2 = require_leaflet_src();
+      var addIndiaBoundaries = require_india_boundaries();
+      var { KERALA_BOUNDS, MIN_ZOOM } = require_constants();
+      var {
+        expect,
+        available,
+        getLayer,
+        getOverview,
+        expectSearch,
+        getAllOverview,
+        isValidQid,
+        getGeojson
+      } = require_map_utils();
+      var { fetchWikipediaPageByQid, retrieveWikiPage } = require_wiki_utils();
+      var map = L2.map("map", {
+        minZoom: MIN_ZOOM,
+        maxBoundsViscosity: 0.9
+      }).fitBounds(KERALA_BOUNDS);
+      L2.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxBounds: KERALA_BOUNDS,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+      addIndiaBoundaries(map);
+      var state = {
+        qid: document.querySelector("[data-mk-key=qid]").textContent.trim(),
+        feature: "Boundaries",
+        len: document.querySelector("[data-mk-key=len]").textContent.trim(),
+        displayedLayers: [],
+        searchSetup: false
+      };
+      var setQid = (qid) => {
+        setQidExceptUrlChange(qid);
+        urlChangeRequired();
+      };
+      var setQidExceptUrlChange = (qid) => {
+        state.qid = qid;
+        const { len, lml, urlpath, district } = getOverview(qid);
+        state.len = len;
+        state.lml = lml;
+        state.district = district;
+        state.urlpath = urlpath;
+        mapChangeRequired();
+        wikiChangeRequired();
+        skeletonChangeRequired();
+      };
+      var setFeature = (feature) => {
+        state.feature = feature;
+        configureButton = document.getElementById("configuration");
+        configureButton.textContent = feature;
+        mapChangeRequired();
+      };
+      var startJSONDownload = (filename, data) => {
+        const string = JSON.stringify(data);
+        const bytes = new TextEncoder().encode(string);
+        const blob = new Blob([bytes], { type: "application/json;charset=utf-8" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+      };
+      var downloadButton = document.querySelector("#download");
+      downloadButton.addEventListener("click", () => {
+        startJSONDownload(`${state.len} - ${state.feature}.geojson`, getGeojson(state.qid, state.feature));
+      });
+      var disableDownload = () => downloadButton.disabled = true;
+      var enableDownload = () => downloadButton.disabled = false;
+      var spinner = document.querySelector("[role=status]");
+      var showSpinner = () => spinner.style.visibility = "visible";
+      var hideSpinner = () => spinner.style.visibility = "hidden";
+      var showUselessWarning = () => alert("Sorry, no data available for that.");
+      var mapChangeRequired = () => __async(exports, null, function* () {
+        showSpinner();
+        state.displayedLayers.forEach((oldLayer) => map.removeLayer(oldLayer));
+        disableDownload();
+        yield expect(state.qid, state.feature);
+        if (!available(state.qid, state.feature))
+          return;
+        const layer = getLayer(state.qid, state.feature);
+        if (layer === "USELESS") {
+          hideSpinner();
+          showUselessWarning();
+        } else {
+          state.displayedLayers = [layer];
+          map.addLayer(layer);
+          map.flyTo(layer.getBounds().getCenter(), 12);
+          hideSpinner();
+          enableDownload();
+        }
+      });
+      var changeAll = (selector, content) => document.querySelectorAll(selector).forEach((el) => el.textContent = content);
+      var skeletonChangeRequired = () => {
+        changeAll("[data-mk-key=qid]", state.qid);
+        changeAll("[data-mk-key=len]", state.len);
+        changeAll("[data-mk-key=lml]", state.lml);
+        changeAll("[data-mk-key=district]", state.district);
+        document.querySelector("#district-link").href = `/${state.district.toLowerCase()}/`;
+        document.querySelector("#lsg-link").href = `/${state.urlpath}/`;
+        document.querySelector("#wikidata-link").href = `https://www.wikidata.org/wiki/${state.qid}`;
+      };
+      var urlChangeRequired = () => {
+        window.history.pushState({ qid: state.qid }, "", `/${state.urlpath}/`);
+      };
+      var messages = {
+        enwiki: `Read more on wikipedia`,
+        mlwiki: `\u0D35\u0D3F\u0D15\u0D4D\u0D15\u0D3F\u0D2A\u0D40\u0D21\u0D3F\u0D2F\u0D2F\u0D3F\u0D32\u0D4D\u200D \u0D15\u0D42\u0D1F\u0D41\u0D24\u0D32\u0D4D\u200D \u0D35\u0D3E\u0D2F\u0D3F\u0D15\u0D4D\u0D15\u0D3E\u0D02`
+      };
+      var wikiChangeRequired = () => __async(exports, null, function* () {
+        yield fetchWikipediaPageByQid(state.qid);
+        const wp = retrieveWikiPage(state.qid);
+        if (!wp)
+          return;
+        const extracts = ["mlwiki", "enwiki"].map((wiki) => {
+          var _a, _b, _c;
+          if (!wp[wiki])
+            return;
+          return `${wp[wiki].extract_html}<a target="_blank" href=${(_c = (_b = (_a = wp[wiki]) == null ? void 0 : _a.content_urls) == null ? void 0 : _b.desktop) == null ? void 0 : _c.page}>${messages[wiki]}</a>`;
+        });
+        document.querySelector("#wikipedia").innerHTML = extracts.join("");
+      });
+      var featureSelectionButtons = document.querySelectorAll("[data-mk-feature]");
+      featureSelectionButtons.forEach((button) => {
+        button.addEventListener("click", (e) => {
+          const feature = e.target.getAttribute("data-mk-feature");
+          setFeature(feature);
+        });
+      });
+      mapChangeRequired();
+      wikiChangeRequired();
+      var setUpSearch = () => {
+        if (state.searchSetup)
+          return;
+        expectSearch().then(() => {
+          const datalist = document.querySelector("#search-datalist");
+          const overview = getAllOverview();
+          for (const qid of Object.keys(overview)) {
+            const opt = document.createElement("option");
+            opt.value = qid;
+            opt.label = `${overview[qid].len} (${overview[qid].district}) | ${overview[qid].lml}`;
+            datalist.appendChild(opt);
+          }
+          state.searchSetup = true;
+        });
+      };
+      document.querySelector("#search").addEventListener("click", setUpSearch);
+      document.querySelector("#search").addEventListener("input", (e) => {
+        const maybeQid = e.target.value;
+        if (!isValidQid(maybeQid))
+          return;
+        e.target.value = "";
+        setQid(maybeQid);
+      });
+      window.history.replaceState({ qid: state.qid }, "", window.location.pathname);
+      window.addEventListener("popstate", (event) => {
+        setQidExceptUrlChange(event.state.qid);
+      });
     }
-  };
-  var changeAll = (selector, content) => document.querySelectorAll(selector).forEach((el) => el.textContent = content);
-  var skeletonChangeRequired = () => {
-    changeAll("[data-mk-key=qid]", state.qid);
-    changeAll("[data-mk-key=len]", state.len);
-    changeAll("[data-mk-key=lml]", state.lml);
-    changeAll("[data-mk-key=district]", state.district);
-    document.querySelector("#district-link").href = `/${state.district.toLowerCase()}/`;
-    document.querySelector("#lsg-link").href = `/${state.urlpath}/`;
-    document.querySelector("#wikidata-link").href = `https://www.wikidata.org/wiki/${state.qid}`;
-  };
-  var urlChangeRequired = () => {
-    window.history.pushState({ qid: state.qid }, "", `/${state.urlpath}/`);
-  };
-  var messages = {
-    enwiki: `Read more on wikipedia`,
-    mlwiki: `\u0D35\u0D3F\u0D15\u0D4D\u0D15\u0D3F\u0D2A\u0D40\u0D21\u0D3F\u0D2F\u0D2F\u0D3F\u0D32\u0D4D\u200D \u0D15\u0D42\u0D1F\u0D41\u0D24\u0D32\u0D4D\u200D \u0D35\u0D3E\u0D2F\u0D3F\u0D15\u0D4D\u0D15\u0D3E\u0D02`
-  };
-  var wikiChangeRequired = async () => {
-    await fetchWikipediaPageByQid(state.qid);
-    const wp = retrieveWikiPage(state.qid);
-    if (!wp)
-      return;
-    const extracts = ["mlwiki", "enwiki"].map((wiki) => {
-      if (!wp[wiki])
-        return;
-      return `${wp[wiki].extract_html}<a target="_blank" href=${wp[wiki]?.content_urls?.desktop?.page}>${messages[wiki]}</a>`;
-    });
-    document.querySelector("#wikipedia").innerHTML = extracts.join("");
-  };
-  var featureSelectionButtons = document.querySelectorAll("[data-mk-feature]");
-  featureSelectionButtons.forEach((button) => {
-    button.addEventListener("click", (e) => {
-      const feature = e.target.getAttribute("data-mk-feature");
-      setFeature(feature);
-    });
   });
-  mapChangeRequired();
-  wikiChangeRequired();
-  var setUpSearch = () => {
-    if (state.searchSetup)
-      return;
-    expectSearch().then(() => {
-      const datalist = document.querySelector("#search-datalist");
-      const overview = getAllOverview();
-      for (const qid of Object.keys(overview)) {
-        const opt = document.createElement("option");
-        opt.value = qid;
-        opt.label = `${overview[qid].len} (${overview[qid].district}) | ${overview[qid].lml}`;
-        datalist.appendChild(opt);
-      }
-      state.searchSetup = true;
-    });
-  };
-  document.querySelector("#search").addEventListener("click", setUpSearch);
-  document.querySelector("#search").addEventListener("input", (e) => {
-    const maybeQid = e.target.value;
-    if (!isValidQid(maybeQid))
-      return;
-    e.target.value = "";
-    setQid(maybeQid);
-  });
-  window.history.replaceState({ qid: state.qid }, "", window.location.pathname);
-  window.addEventListener("popstate", (event) => {
-    setQidExceptUrlChange(event.state.qid);
-  });
+  require_stdin();
 })();
 /* @preserve
  * Leaflet 1.7.1, a JS library for interactive maps. http://leafletjs.com

@@ -1,3 +1,7 @@
+## March 2022
+
+* Support for older browsers (es2015+)
+
 ## Feb 2022
 
 * Show data from wikipedia page

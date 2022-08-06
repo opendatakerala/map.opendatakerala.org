@@ -56,6 +56,7 @@ for row in records:
     row['description'] = f"Geospatial data about {row['len']} ({row['districtLabel']})"
     row['images'] = [f"/img/{row['qid']}.png"]
     row['urlpath'] = get_slug(row)
+    row['aliases'] = [f"/{row['qid']}"]
 
     district = get_district(row)
     

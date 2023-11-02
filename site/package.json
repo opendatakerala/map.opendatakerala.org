@@ -2,6 +2,7 @@
   "name": "mapkerala",
   "dependencies": {
     "leaflet": "^1.7.1",
-    "osmtogeojson": "^3.0.0-beta.4"
+    "osmtogeojson": "^3.0.0-beta.4",
+    "tangram": "^0.21.1"
   }
 }

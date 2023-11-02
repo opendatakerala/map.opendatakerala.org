@@ -1,4 +1,5 @@
 const L = require("leaflet");
+const Tangram = require('tangram');
 
 const addIndiaBoundaries = require("./india-boundaries");
 const { KERALA_BOUNDS, MIN_ZOOM } = require("./constants");
@@ -19,11 +20,21 @@ const map = L.map("map", {
     maxBoundsViscosity: 0.9,
 }).fitBounds(KERALA_BOUNDS);
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxBounds: KERALA_BOUNDS,
-    attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-}).addTo(map);
+const legacy = false;
+
+if (legacy) {
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxBounds: KERALA_BOUNDS,
+        attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+} else {
+    const tangramLayer = Tangram.leafletLayer({
+        maxBounds: KERALA_BOUNDS,
+        scene: '/scene.yaml',
+        attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors'
+    }).addTo(map);
+}
 
 addIndiaBoundaries(map);
 

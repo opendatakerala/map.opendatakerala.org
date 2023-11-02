@@ -1,8 +1,3 @@
-const L = require("leaflet");
-const Tangram = require('tangram');
-
-const addIndiaBoundaries = require("./india-boundaries");
-const { KERALA_BOUNDS, MIN_ZOOM } = require("./constants");
 const {
     expect,
     available,
@@ -15,33 +10,7 @@ const {
 } = require("map-utils");
 const { fetchWikipediaPageByQid, retrieveWikiPage } = require("wiki-utils");
 
-const map = L.map("map", {
-    minZoom: MIN_ZOOM,
-    maxBoundsViscosity: 0.9,
-    zoomControl: false,
-}).fitBounds(KERALA_BOUNDS);
-
-L.control.zoom({
-    position: 'topright'
-}).addTo(map);
-
-const legacy = false;
-
-if (legacy) {
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxBounds: KERALA_BOUNDS,
-        attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(map);
-} else {
-    const tangramLayer = Tangram.leafletLayer({
-        maxBounds: KERALA_BOUNDS,
-        scene: '/scene.yaml',
-        attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors'
-    }).addTo(map);
-}
-
-addIndiaBoundaries(map);
+const { map, setBaseLayer } = require('./leaflet-manager');
 
 const state = {
     qid: document.querySelector("[data-mk-key=qid]")?.textContent?.trim(),
@@ -204,6 +173,9 @@ window.history.replaceState({ qid: state.qid }, "", window.location.pathname);
 window.addEventListener("popstate", (event) => {
     setQidExceptUrlChange(event.state.qid);
 });
+
+document.querySelector('#switch-to-osm').addEventListener('click', () => setBaseLayer('osm'))
+document.querySelector('#switch-to-tan').addEventListener('click', () => setBaseLayer('tan'))
 
 // TODO: Show an alert for
 // This portal is under active development. Features maybe added or removed without

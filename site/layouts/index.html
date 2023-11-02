@@ -30,18 +30,6 @@
     </div>
     <div>
         {{ .Content }}
-        <div class="d-flex flex-wrap row-cols-1 row-cols-md-3 justify-content-evenly">
-            {{ range .Site.Data.districts }}
-            <a class="text-decoration-none p-2" href="{{ .name | urlize }}"
-                onmouseover="this.style.transform = 'scale(1.05)'" onmouseout="this.style.transform = 'scale(1)'">
-                <div class="card col">
-                    <img src="{{ .thumb }}" class="card-img-top" height="250px" style="object-fit: cover" loading="lazy"
-                        alt="Representational image for {{ .name }}">
-                    <h1 class="display-6 text-center text-muted">{{ .name }}</h1>
-                </div>
-            </a>
-            {{ end }}
-        </div>
     </div>
 </Section>
 {{ end }}

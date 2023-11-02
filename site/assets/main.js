@@ -1,7 +1,6 @@
 const {
     expect,
     available,
-    getLayer,
     getOverview,
     expectSearch,
     getAllOverview,
@@ -10,13 +9,14 @@ const {
 } = require("map-utils");
 const { fetchWikipediaPageByQid, retrieveWikiPage } = require("wiki-utils");
 
-const { map, setBaseLayer } = require('./leaflet-manager');
+const { isEmptyObject } = require('./utils');
+
+const { map, setBaseLayer, addGeojsonToMap, removeCurrentLayers } = require('./leaflet-manager');
 
 const state = {
     qid: document.querySelector("[data-mk-key=qid]")?.textContent?.trim() ?? "Q1186",
     feature: "Boundaries",
     len: document.querySelector("[data-mk-key=len]")?.textContent?.trim() ?? "Kerala",
-    displayedLayers: [],
     searchSetup: false,
 };
 
@@ -72,22 +72,20 @@ const showUselessWarning = () => alert("Sorry, no data available for that.");
 
 const mapChangeRequired = async () => {
     showSpinner();
-    state.displayedLayers.forEach((oldLayer) => map.removeLayer(oldLayer));
+    removeCurrentLayers();
     disableDownload();
 
     await expect(state.qid, state.feature);
     if (!available(state.qid, state.feature)) return;
 
-    const layer = getLayer(state.qid, state.feature);
+    const geojson = getGeojson(state.qid, state.feature);
 
-    if (layer === "USELESS") {
-        hideSpinner();
+    const layer = addGeojsonToMap(geojson);
+    hideSpinner();
+    if (isEmptyObject(layer.getBounds())) {
         showUselessWarning();
     } else {
-        state.displayedLayers = [layer];
-        map.addLayer(layer);
-        map.flyToBounds(layer.getBounds());
-        hideSpinner();
+        map.flyToBounds(layer.getBounds().pad(0.05));
         enableDownload();
     }
 };

@@ -87,3 +87,13 @@ layers:
             draw:
                 polygons:
                     extrude: function () { return feature.height > 20 || $zoom >= 16; }
+
+    loaded:
+        data: { source: dynamic }
+        draw:
+            lines:
+                order: 1000
+                color: "#cccccc"
+            polygons:
+                order: 10000
+                color: '#cccccc'

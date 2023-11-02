@@ -2,7 +2,7 @@ const osmtogeojson = require("osmtogeojson");
 const L = require("leaflet");
 const { QUERIES } = require("constants");
 const { OVERPASS_URL } = require("constants");
-const { fetchJSONWithUrlSearchParams, isEmptyObject } = require("utils");
+const { fetchJSONWithUrlSearchParams } = require("utils");
 
 const mapDataStore = {};
 
@@ -23,21 +23,9 @@ const fetchAndStore = async (qid, feature) => {
     return fetchJSONWithUrlSearchParams(OVERPASS_URL, { data: query }).then(
         (data) => {
             const geojson = osmtogeojson(data);
-            const mapLayer = L.geoJSON(geojson, { color: "blue" });
-            if (isEmptyObject(mapLayer.getBounds())) {
-                mapDataStore[`${qid}#${feature}`] = {
-                    geojson: "USELESS",
-                    mapLayer: "USELESS",
-                    location: "USELESS",
-                };
-            } else {
-                const location = mapLayer.getBounds().getCenter();
-                mapDataStore[`${qid}#${feature}`] = {
-                    geojson,
-                    mapLayer,
-                    location,
-                };
-            }
+            mapDataStore[`${qid}#${feature}`] = {
+                geojson,
+            };
         }
     );
 };
@@ -71,7 +59,6 @@ const createOverview = () => {
     }
 };
 
-const getLayer = (qid, feature) => mapDataStore[`${qid}#${feature}`].mapLayer;
 const getGeojson = (qid, feature) => mapDataStore[`${qid}#${feature}`].geojson;
 
 const getOverview = (qid) => mapDataStore.byQid[qid];
@@ -81,7 +68,6 @@ const isValidQid = (maybeQid) => mapDataStore.byQid.hasOwnProperty(maybeQid);
 module.exports = {
     expect,
     available,
-    getLayer,
     getOverview,
     getGeojson,
     getAllOverview,

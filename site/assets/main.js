@@ -13,9 +13,9 @@ const { fetchWikipediaPageByQid, retrieveWikiPage } = require("wiki-utils");
 const { map, setBaseLayer } = require('./leaflet-manager');
 
 const state = {
-    qid: document.querySelector("[data-mk-key=qid]")?.textContent?.trim(),
+    qid: document.querySelector("[data-mk-key=qid]")?.textContent?.trim() ?? "Q1186",
     feature: "Boundaries",
-    len: document.querySelector("[data-mk-key=len]")?.textContent?.trim(),
+    len: document.querySelector("[data-mk-key=len]")?.textContent?.trim() ?? "Kerala",
     displayedLayers: [],
     searchSetup: false,
 };
@@ -86,7 +86,7 @@ const mapChangeRequired = async () => {
     } else {
         state.displayedLayers = [layer];
         map.addLayer(layer);
-        map.flyTo(layer.getBounds().getCenter(), 12);
+        map.flyToBounds(layer.getBounds());
         hideSpinner();
         enableDownload();
     }

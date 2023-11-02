@@ -1,0 +1,28 @@
+<button class="btn btn-secondary" type="button" data-bs-toggle="modal" id="configuration-button"
+    data-bs-target="#configuration-chooser">
+    <span id="configuration">Boundaries</span> &nbsp;
+    <i class="fa-solid fa-gear"></i>
+</button>
+<div class="dropdown d-flex">
+    <div class="modal fade" id="configuration-chooser">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            {{ range $group, $features := .Site.Data.features }}
+                            <div class="col-md-4 pt-4">
+                                <h6>{{ $group }}</h6>
+                                {{ range $features }}
+                                <button type="button" class="btn-secondary btn-lg feature-button"
+                                    data-bs-dismiss="modal" data-mk-feature="{{ . }}">{{ . }}</button>
+                                {{ end }}
+                            </div>
+                            {{ end }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

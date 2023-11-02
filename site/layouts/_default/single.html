@@ -1,11 +1,11 @@
 {{ define "breadcrump" }}
-<li class="nav-link rounded m-1 p-2">
+<li class="nav-link rounded">
     <a class="text-dark text-decoration-none" id="district-link" href="{{ .Page.Parent.Permalink }}"
         data-mk-key="district">
         {{ .Page.Parent.Params.len | default .Page.Parent.Title }}
     </a>
 </li>
-<li class="nav-link active bg-dark rounded m-1 p-2">
+<li class="nav-link active bg-dark rounded">
     <a class="text-light text-decoration-none" id="lsg-link" href="{{ .Page.Permalink }}" data-mk-key="len">
         {{ .Page.Params.len | default .Page.Title }}
     </a>
@@ -13,67 +13,12 @@
 {{ end }}
 
 {{ define "main" }}
-<div class="w-100 d-flex flex-column">
-    <div class="alert alert-warning">
-        This portal is under active development. Features maybe added or removed without
-        notice. Contact <a href="mailto:opendatakerala@gmail.com">opendatakerala@gmail.com</a> for more information.
-    </div>
-    <div id="controls" class="h1 mt-4 mb-4">
-        <div id="lsgTitle" data-mk-key="len">
-            {{- .Params.len -}}
-        </div>
-        <div class="dropdown d-flex">
-            <button class="btn btn-secondary" type="button" data-bs-toggle="modal" id="configuration-button"
-                data-bs-target="#configuration-chooser">
-                <span id="configuration">Boundaries</span> &nbsp;
-                <i class="fa-solid fa-gear"></i>
-            </button>
-            <div class="modal fade" id="configuration-chooser">
-                <div class="modal-dialog modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    {{ range $group, $features := .Site.Data.features }}
-                                    <div class="col-md-4 pt-4">
-                                        <h6>{{ $group }}</h6>
-                                        {{ range $features }}
-                                        <button type="button" class="btn-secondary btn-lg feature-button"
-                                            data-bs-dismiss="modal" data-mk-feature="{{ . }}">{{ . }}</button>
-                                        {{ end }}
-                                    </div>
-                                    {{ end }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <div class="spinner-grow" role="status" style="visibility: hidden;">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-        <button id="download" class="btn btn-dark shadow" disabled>
-            Download
-        </button>
-
-    </div>
-    <div class="card shadow-lg" id="map"></div>
-    <div class="card" id="wikidata" style="display: none;"><a id="wikidata-link" target="_blank"
-            href="https://www.wikidata.org/wiki/{{ .Params.qid }}">View on Wikidata</a></div>
-    <div class="card" id="wikipedia"></div>
-
-</div>
 
 <div id="metadata">
     <div id="qid" data-mk-key="qid">
         {{- .Params.qid -}}
     </div>
 </div>
-
-{{ $js := resources.Get "main.js" | js.Build (dict "minify" false "target" "es2015") }}
-<script src="{{ $js.RelPermalink }}"></script>
 
 {{- .Content -}}
 {{ end }}

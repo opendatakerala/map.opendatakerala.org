@@ -1,4 +1,6 @@
 ---
-title: Credits
-layout: districts
+title: Districts
+layout: meta
 ---
+
+{{< districts >}}

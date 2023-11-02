@@ -18,7 +18,12 @@ const { fetchWikipediaPageByQid, retrieveWikiPage } = require("wiki-utils");
 const map = L.map("map", {
     minZoom: MIN_ZOOM,
     maxBoundsViscosity: 0.9,
+    zoomControl: false,
 }).fitBounds(KERALA_BOUNDS);
+
+L.control.zoom({
+    position: 'topright'
+}).addTo(map);
 
 const legacy = false;
 
@@ -39,9 +44,9 @@ if (legacy) {
 addIndiaBoundaries(map);
 
 const state = {
-    qid: document.querySelector("[data-mk-key=qid]").textContent.trim(),
+    qid: document.querySelector("[data-mk-key=qid]")?.textContent?.trim(),
     feature: "Boundaries",
-    len: document.querySelector("[data-mk-key=len]").textContent.trim(),
+    len: document.querySelector("[data-mk-key=len]")?.textContent?.trim(),
     displayedLayers: [],
     searchSetup: false,
 };
@@ -199,3 +204,7 @@ window.history.replaceState({ qid: state.qid }, "", window.location.pathname);
 window.addEventListener("popstate", (event) => {
     setQidExceptUrlChange(event.state.qid);
 });
+
+// TODO: Show an alert for
+// This portal is under active development. Features maybe added or removed without
+// notice. Contact <a href="mailto:opendatakerala@gmail.com">opendatakerala@gmail.com</a> for more information.

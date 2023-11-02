@@ -21,7 +21,8 @@
     <style>
         @import url('https://smc.org.in/fonts/gayathri.css');
 
-        html, body {
+        html,
+        body {
             font-family: 'Gayathri', sans-serif;
         }
     </style>
@@ -29,6 +30,25 @@
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
         crossorigin="" />
     <style>
+        #main-container {
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        #control-panel {}
+
+        @media (min-width: 600px) {
+            #main-container {
+                flex-direction: row;
+            }
+
+            #control-panel {
+                height: 100vh;
+                max-width: 350px;
+                overflow-y: scroll;
+            }
+        }
+
         #controls {
             display: flex;
             flex-direction: row;
@@ -42,8 +62,6 @@
         #map {
             min-height: 70vh;
             flex: 1;
-            margin: 10px;
-            padding: 10px;
         }
 
         #metadata {
@@ -57,10 +75,16 @@
 
 </head>
 
-<body class="d-flex align-items-center flex-column">
-    {{ if not .IsHome}}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="width: 100%;">
-        <div class="container-fluid m-1">
+<body id="main-container">
+    <div id="control-panel">
+        {{/* This map-page variable allows us to handle meta pages separately */}}
+        {{ .Store.Set "map-page" false }}
+        {{ if or ( and (.IsPage) (ne .Params.layout "meta" ) ) ( .IsHome ) }}
+        {{ .Store.Set "map-page" true }}
+        {{ end }}
+
+        {{ if .Store.Get "map-page"}}
+        <nav class="navbar navbar-light bg-light" style="width: 100%;">
             <a class="navbar-brand" href="/">Map Kerala <sub>Alpha</sub></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -74,19 +98,38 @@
                     {{ end }}
                 </ul>
                 {{ if and (not (eq .Layout "meta")) (not (eq .Kind "section" )) }}
-                <div class="d-flex">
-                    <input id="search" list="search-datalist"/>
+                <div>
+                    <input id="search" list="search-datalist" />
                     <datalist id="search-datalist"></datalist>
                 </div>
                 {{ end }}
             </div>
+        </nav>
+        <div id="lsgTitle" data-mk-key="len">
+            {{- .Params.len -}}
         </div>
-    </nav>
-    {{end}}
-    <div class="d-flex justify-content-center container-sm">
-        {{- block "main" . }}{{- end }}
+        {{ partial "map-configs.html" . }}
+        <button id="download" class="btn btn-dark shadow" disabled>
+            Download
+        </button>
+        <div class="spinner-grow" role="status" style="visibility: hidden;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+
+        <div class="card" id="wikidata" style="display: none;"><a id="wikidata-link" target="_blank"
+                href="https://www.wikidata.org/wiki/{{ .Params.qid }}">View on Wikidata</a></div>
+        <div class="card" id="wikipedia"></div>
+        {{end}}
+        {{ partial "footer.html" . }}
     </div>
-    {{ partial "footer.html" . }}
+    {{- block "main" . }}{{- end }}
+
+    {{ if .Store.Get "map-page" }}
+    <div class="card shadow-lg" id="map"></div>
+    {{ $js := resources.Get "main.js" | js.Build (dict "minify" false "target" "es2015") }}
+    <script src="{{ $js.RelPermalink }}"></script>
+    {{ end}}
+
 </body>
 
 </html>

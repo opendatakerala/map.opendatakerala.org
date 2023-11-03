@@ -84,23 +84,14 @@
         {{ end }}
 
         {{ if .Store.Get "map-page"}}
-        <nav>
-            <a class="navbar-brand" href="/">Map Kerala <sub>Alpha</sub></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div>
-                <div>
-                    <input id="search" list="search-datalist" />
-                    <datalist id="search-datalist"></datalist>
-                </div>
-            </div>
-        </nav>
+        <a class="navbar-brand" href="/">Map Kerala <sub>Alpha</sub></a>
+        <div>
+            <input id="search" list="search-datalist" />
+            <datalist id="search-datalist"></datalist>
+        </div>
         <div data-mk-key="lsg-title">
             {{ if .Parent }}
-            {{- .Params.len }} (<a href="{{.Parent.RelPermalink}}">{{ .Parent.Title }}</a>)
+            <nav>{{- .Params.len }} (<a href="{{.Parent.RelPermalink}}">{{ .Parent.Title }}</a>)</nav>
             {{ end }}
         </div>
         {{ partial "map-configs.html" . }}

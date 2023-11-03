@@ -92,8 +92,8 @@ const mapChangeRequired = async () => {
 
 const changeAll = (selector, content) =>
     document
-        .querySelectorAll(selector)
-        .forEach((el) => (el.textContent = content));
+        ?.querySelectorAll(selector)
+        ?.forEach((el) => (el.textContent = content));
 
 const changeHTML = (selector, content) =>
     document.querySelectorAll(selector).forEach((el) => (el.innerHTML = content))
@@ -103,12 +103,7 @@ const skeletonChangeRequired = () => {
     changeAll("[data-mk-key=len]", state.len);
     changeAll("[data-mk-key=lml]", state.lml);
     changeAll("[data-mk-key=district]", state.district);
-    changeHTML("[data-mk-key=lsg-title]", `${state.len} (${state.district})`)
-    changeAll()
-    document.querySelector(
-        "#district-link"
-    ).href = `/${state.district.toLowerCase()}/`;
-    document.querySelector("#lsg-link").href = `/${state.urlpath}/`;
+    changeHTML("[data-mk-key=lsg-title]", `${state.len} (<a href="/${state.district.toLowerCase()}">${state.district}</a>)`)
     document.querySelector(
         "#wikidata-link"
     ).href = `https://www.wikidata.org/wiki/${state.qid}`;

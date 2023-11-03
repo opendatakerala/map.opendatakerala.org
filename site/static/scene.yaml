@@ -97,3 +97,4 @@ layers:
             polygons:
                 order: 10000
                 color: '#cccccc'
+                extrude: true

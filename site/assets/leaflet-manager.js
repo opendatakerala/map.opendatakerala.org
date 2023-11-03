@@ -38,6 +38,7 @@ if (baseLayer === 'osm') {
 addIndiaBoundaries(map);
 
 const setBaseLayer = (l) => {
+    baseLayer = l;
     if (l === 'osm') {
         if (map.hasLayer(tangramLayer)) {
             tangramLayer.remove()
@@ -49,6 +50,13 @@ const setBaseLayer = (l) => {
         }
         tangramLayer.addTo(map);
     }
+    redrawAdditonalLayers();
+}
+
+const redrawAdditonalLayers = () => {
+    const geojsons = additionalFeatures.map(f => f.geojson);
+    removeCurrentLayers();
+    geojsons.forEach(g => addGeojsonToMap(g));
 }
 
 const addGeojsonToMap = (geojson) => {
@@ -66,7 +74,7 @@ const addGeojsonToMap = (geojson) => {
 const removeCurrentLayers = () => {
     additionalFeatures.forEach(f => {
         map.removeLayer(f.layer);
-        tangramLayer.scene.setDataSource("dynamic", { type: "GeoJSON", data: {} })
+        tangramLayer?.scene?.setDataSource("dynamic", { type: "GeoJSON", data: {} })
     })
 }
 

@@ -1,17 +1,3 @@
-{{ define "breadcrump" }}
-<li class="nav-link rounded">
-    <a class="text-dark text-decoration-none" id="district-link" href="{{ .Page.Parent.Permalink }}"
-        data-mk-key="district">
-        {{ .Page.Parent.Params.len | default .Page.Parent.Title }}
-    </a>
-</li>
-<li class="nav-link active bg-dark rounded">
-    <a class="text-light text-decoration-none" id="lsg-link" href="{{ .Page.Permalink }}" data-mk-key="len">
-        {{ .Page.Params.len | default .Page.Title }}
-    </a>
-</li>
-{{ end }}
-
 {{ define "main" }}
 
 <div id="metadata">

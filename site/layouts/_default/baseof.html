@@ -84,29 +84,24 @@
         {{ end }}
 
         {{ if .Store.Get "map-page"}}
-        <nav class="navbar navbar-light bg-light" style="width: 100%;">
+        <nav>
             <a class="navbar-brand" href="/">Map Kerala <sub>Alpha</sub></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    {{ block "breadcrump" . }}
-                    {{ partial "breadcrump.html" . }}
-                    {{ end }}
-                </ul>
-                {{ if and (not (eq .Layout "meta")) (not (eq .Kind "section" )) }}
+            <div>
                 <div>
                     <input id="search" list="search-datalist" />
                     <datalist id="search-datalist"></datalist>
                 </div>
-                {{ end }}
             </div>
         </nav>
-        <div id="lsgTitle" data-mk-key="len">
-            {{- .Params.len -}}
+        <div data-mk-key="lsg-title">
+            {{ if .Parent }}
+            {{- .Params.len }} (<a href="{{.Parent.RelPermalink}}">{{ .Parent.Title }}</a>)
+            {{ end }}
         </div>
         {{ partial "map-configs.html" . }}
         <button id="download" class="btn btn-dark shadow" disabled>

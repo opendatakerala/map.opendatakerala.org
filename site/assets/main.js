@@ -95,11 +95,16 @@ const changeAll = (selector, content) =>
         .querySelectorAll(selector)
         .forEach((el) => (el.textContent = content));
 
+const changeHTML = (selector, content) =>
+    document.querySelectorAll(selector).forEach((el) => (el.innerHTML = content))
+
 const skeletonChangeRequired = () => {
     changeAll("[data-mk-key=qid]", state.qid);
     changeAll("[data-mk-key=len]", state.len);
     changeAll("[data-mk-key=lml]", state.lml);
     changeAll("[data-mk-key=district]", state.district);
+    changeHTML("[data-mk-key=lsg-title]", `${state.len} (${state.district})`)
+    changeAll()
     document.querySelector(
         "#district-link"
     ).href = `/${state.district.toLowerCase()}/`;

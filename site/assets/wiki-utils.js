@@ -23,14 +23,6 @@ const wikiBaseGetEntities = ({
     return fetch(`${WIKIDATA_API}?${params}`, { headers: wikiReqHeaders }).then(res => res.json())
 }
 
-const fetchWikipediaPageByQid = (qid) => {
-    return wikiBaseGetEntities({ ids: qid })
-        .then((data) => {
-            wikiStore.wd[qid] = data;
-        })
-        .then(() => hydrateWiki(qid));
-};
-
 const fetchWikiPageSummary = ({ lang = "en", title }) => {
     return fetch(
         `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${title}?origin=*`,
@@ -39,22 +31,8 @@ const fetchWikiPageSummary = ({ lang = "en", title }) => {
         .then(res => res.json())
 }
 
-const hydrateWiki = async (qid) => {
-    const siteLinks = wikiStore.wd[qid].entities[qid].sitelinks;
-    wikiStore.wp[qid] = {};
-    await Promise.all(["ml", "en"].map(lang => {
-        const wikiname = `${lang}wiki`
-        if (!siteLinks.hasOwnProperty(wikiname)) return Promise.resolve();
-        return fetchWikiPageSummary({ lang, title: siteLinks[wikiname].title })
-            .then(data => wikiStore.wp[qid][wikiname] = data)
-    }))
-};
-
-const retrieveWikiPage = (qid) => {
-    return wikiStore.wp[qid];
-};
-
 module.exports = {
-    fetchWikipediaPageByQid,
-    retrieveWikiPage,
+    wikiBaseGetEntities,
+    fetchWikiPageSummary
 };
+

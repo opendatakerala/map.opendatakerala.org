@@ -104,8 +104,9 @@
             <span class="visually-hidden">Loading...</span>
         </div>
 
-        <div class="card" id="wikidata" style="display: none;"><a id="wikidata-link" target="_blank"
-                href="https://www.wikidata.org/wiki/{{ .Params.qid }}">View on Wikidata</a></div>
+        <wiki-data qid="{{ .Params.qid }}">{{ .Params.qid }}</wiki-data>
+        <wiki-pedia lang="ml"></wiki-pedia>
+        <wiki-pedia lang="en"></wiki-pedia>
         <div class="card" id="wikipedia"></div>
         {{end}}
         {{ partial "footer.html" . }}

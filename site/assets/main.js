@@ -7,11 +7,13 @@ const {
     isValidQid,
     getGeojson,
 } = require("map-utils");
-const { fetchWikipediaPageByQid, retrieveWikiPage } = require("wiki-utils");
 
 const { isEmptyObject } = require('./utils');
 
 const { map, setBaseLayer, addGeojsonToMap, removeCurrentLayers } = require('./leaflet-manager');
+
+const { wikiBaseGetEntities, fetchWikiPageSummary } = require('./wiki-utils');
+
 
 const state = {
     qid: document.querySelector("[data-mk-key=qid]")?.textContent?.trim() ?? "Q1186",
@@ -33,7 +35,6 @@ const setQidExceptUrlChange = (qid) => {
     state.district = district;
     state.urlpath = urlpath;
     mapChangeRequired();
-    wikiChangeRequired();
     skeletonChangeRequired();
 };
 
@@ -113,23 +114,6 @@ const urlChangeRequired = () => {
     window.history.pushState({ qid: state.qid }, "", `/${state.urlpath}/`);
 };
 
-const messages = {
-    enwiki: `Read more on wikipedia`,
-    mlwiki: `വിക്കിപീഡിയയില്‍ കൂടുതല്‍ വായിക്കാം`,
-};
-
-const wikiChangeRequired = async () => {
-    await fetchWikipediaPageByQid(state.qid);
-    const wp = retrieveWikiPage(state.qid);
-    if (!wp) return;
-
-    const extracts = ["mlwiki", "enwiki"].map((wiki) => {
-        if (!wp[wiki]) return;
-        return `${wp[wiki].extract_html}<a target="_blank" href=${wp[wiki]?.content_urls?.desktop?.page}>${messages[wiki]}</a>`;
-    });
-
-    document.querySelector("#wikipedia").innerHTML = extracts.join("");
-};
 
 const featureSelectionButtons = document.querySelectorAll("[data-mk-feature]");
 featureSelectionButtons.forEach((button) => {
@@ -140,7 +124,6 @@ featureSelectionButtons.forEach((button) => {
 });
 
 mapChangeRequired();
-wikiChangeRequired();
 
 const setUpSearch = () => {
     if (state.searchSetup) return;
@@ -178,3 +161,65 @@ document.querySelector('#switch-to-tan').addEventListener('click', () => setBase
 // TODO: Show an alert for
 // This portal is under active development. Features maybe added or removed without
 // notice. Contact <a href="mailto:opendatakerala@gmail.com">opendatakerala@gmail.com</a> for more information.
+
+class WikiData extends HTMLElement {
+    constructor() {
+        super();
+        const qid = this.getAttribute("qid") || "Q1186";
+        const link = `
+            <p><a id="wikidata-link" target="_blank" 
+                href="https://www.wikidata.org/wiki/${qid}">
+                View on Wikidata
+            </a></p>`;
+        this.innerHTML = link;
+        wikiBaseGetEntities({ ids: qid }).then((data) => {
+            document.body.dispatchEvent(new CustomEvent('wiki-data-loaded', {
+                detail: {
+                    data,
+                    qid
+                }
+            }))
+        });
+    }
+}
+
+customElements.define('wiki-data', WikiData)
+
+class WikiPedia extends HTMLElement {
+
+    static observedAttributes = ["title"];
+    constructor() {
+        super();
+        const lang = this.getAttribute('lang');
+    }
+    readMoreLink(data) {
+        const messages = {
+            en: `Read more on wikipedia`,
+            ml: `വിക്കിപീഡിയയില്‍ കൂടുതല്‍ വായിക്കാം`,
+        };
+        return `<a target="_blank" href=${data?.content_urls?.desktop?.page}>${messages[this.getAttribute('lang')]}`
+    }
+    attributeChangedCallback(name, oldvalue, newValue) {
+        const lang = this.getAttribute('lang');
+        if (name === "title") {
+            fetchWikiPageSummary({ lang, title: newValue }).then(data => {
+                this.innerHTML = `<div class="card">
+                    ${data.extract_html} ${this.readMoreLink()}
+                </div>`
+            })
+
+        }
+    }
+}
+
+customElements.define('wiki-pedia', WikiPedia)
+
+document.body.addEventListener('wiki-data-loaded', (e) => {
+    const { data, qid } = e.detail;
+    document.querySelectorAll('wiki-pedia').forEach(n => {
+        const lang = n.getAttribute('lang');
+        const wikiname = `${lang}wiki`;
+        const title = data?.entities?.[qid]?.sitelinks?.[wikiname]?.title
+        n.setAttribute("title", title);
+    })
+});

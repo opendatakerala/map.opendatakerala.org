@@ -14,6 +14,9 @@ const { map, setBaseLayer, addGeojsonToMap, removeCurrentLayers } = require('./l
 
 const { wikiBaseGetEntities, fetchWikiPageSummary } = require('./wiki-utils');
 
+import { WikiData } from './components/WikiData';
+import { WikiPedia } from './components/WikiPedia';
+
 
 const state = {
     qid: document.querySelector("[data-mk-key=qid]")?.textContent?.trim() ?? "Q1186",
@@ -162,56 +165,7 @@ document.querySelector('#switch-to-tan').addEventListener('click', () => setBase
 // This portal is under active development. Features maybe added or removed without
 // notice. Contact <a href="mailto:opendatakerala@gmail.com">opendatakerala@gmail.com</a> for more information.
 
-class WikiData extends HTMLElement {
-    constructor() {
-        super();
-        const qid = this.getAttribute("qid") || "Q1186";
-        const link = `
-            <p><a id="wikidata-link" target="_blank" 
-                href="https://www.wikidata.org/wiki/${qid}">
-                View on Wikidata
-            </a></p>`;
-        this.innerHTML = link;
-        wikiBaseGetEntities({ ids: qid }).then((data) => {
-            document.body.dispatchEvent(new CustomEvent('wiki-data-loaded', {
-                detail: {
-                    data,
-                    qid
-                }
-            }))
-        });
-    }
-}
-
 customElements.define('wiki-data', WikiData)
-
-class WikiPedia extends HTMLElement {
-
-    static observedAttributes = ["title"];
-    constructor() {
-        super();
-        const lang = this.getAttribute('lang');
-    }
-    readMoreLink(data) {
-        const messages = {
-            en: `Read more on wikipedia`,
-            ml: `വിക്കിപീഡിയയില്‍ കൂടുതല്‍ വായിക്കാം`,
-        };
-        return `<a target="_blank" href=${data?.content_urls?.desktop?.page}>${messages[this.getAttribute('lang')]}`
-    }
-    attributeChangedCallback(name, oldvalue, newValue) {
-        const lang = this.getAttribute('lang');
-        if (name === "title") {
-            fetchWikiPageSummary({ lang, title: newValue }).then(data => {
-                this.innerHTML = `<div class="card">
-                    ${data.extract_html} ${this.readMoreLink()}
-                </div>`
-            })
-
-        }
-    }
-}
-
 customElements.define('wiki-pedia', WikiPedia)
 
 document.body.addEventListener('wiki-data-loaded', (e) => {
@@ -220,6 +174,6 @@ document.body.addEventListener('wiki-data-loaded', (e) => {
         const lang = n.getAttribute('lang');
         const wikiname = `${lang}wiki`;
         const title = data?.entities?.[qid]?.sitelinks?.[wikiname]?.title
-        n.setAttribute("title", title);
+        n.setAttribute("title", title || "");
     })
 });

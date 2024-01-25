@@ -105,8 +105,8 @@
         </div>
 
         <wiki-data qid="{{ .Params.qid }}">{{ .Params.qid }}</wiki-data>
-        <wiki-pedia lang="ml"></wiki-pedia>
-        <wiki-pedia lang="en"></wiki-pedia>
+        <wiki-pedia lang="ml" draft="{{ .Params.lml }}"></wiki-pedia>
+        <wiki-pedia lang="en" draft="{{ .Params.len }}"></wiki-pedia>
         <div class="card" id="wikipedia"></div>
         {{end}}
         {{ partial "footer.html" . }}

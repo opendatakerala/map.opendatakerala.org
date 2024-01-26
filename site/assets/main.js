@@ -2,7 +2,6 @@ const {
     expect,
     available,
     getOverview,
-    expectSearch,
     getAllOverview,
     isValidQid,
     getGeojson,
@@ -16,13 +15,13 @@ const { wikiBaseGetEntities, fetchWikiPageSummary } = require('./wiki-utils');
 
 import { WikiData } from './components/WikiData';
 import { WikiPedia } from './components/WikiPedia';
+import { setupSearch } from './search';
 
 
 const state = {
     qid: document.querySelector("[data-mk-key=qid]")?.textContent?.trim() ?? "Q1186",
     feature: "Boundaries",
     len: document.querySelector("[data-mk-key=len]")?.textContent?.trim() ?? "Kerala",
-    searchSetup: false,
 };
 
 const setQid = (qid) => {
@@ -40,6 +39,10 @@ const setQidExceptUrlChange = (qid) => {
     mapChangeRequired();
     skeletonChangeRequired();
 };
+
+const navigateToLsg = (lsg) => {
+
+}
 
 const setFeature = (feature) => {
     state.feature = feature;
@@ -74,15 +77,15 @@ const hideSpinner = () => (spinner.style.visibility = "hidden");
 
 const showUselessWarning = () => alert("Sorry, no data available for that.");
 
-const mapChangeRequired = async () => {
+const mapChangeRequired = async ({qid = state.qid, feature = state.feature}) => {
     showSpinner();
     removeCurrentLayers();
     disableDownload();
 
-    await expect(state.qid, state.feature);
-    if (!available(state.qid, state.feature)) return;
+    await expect(qid, feature);
+    if (!available(qid, feature)) return;
 
-    const geojson = getGeojson(state.qid, state.feature);
+    const geojson = getGeojson(qid, feature);
 
     const layer = addGeojsonToMap(geojson);
     hideSpinner();
@@ -128,28 +131,12 @@ featureSelectionButtons.forEach((button) => {
 
 mapChangeRequired();
 
-const setUpSearch = () => {
-    if (state.searchSetup) return;
-    expectSearch().then(() => {
-        const datalist = document.querySelector("#search-datalist");
-        const overview = getAllOverview();
-        for (const qid of Object.keys(overview)) {
-            const opt = document.createElement("option");
-            opt.value = qid;
-            opt.label = `${overview[qid].len} (${overview[qid].district}) | ${overview[qid].lml}`;
-            datalist.appendChild(opt);
-        }
-        state.searchSetup = true;
-    });
-};
-
-document.querySelector("#search").addEventListener("click", setUpSearch);
-
-document.querySelector("#search").addEventListener("input", (e) => {
-    const maybeQid = e.target.value;
-    if (!isValidQid(maybeQid)) return;
-    e.target.value = "";
-    setQid(maybeQid);
+setupSearch("#search", (lsg) => {
+    const infobox = document.querySelector("#infobox");
+    infobox.setAttribute("hx-get", lsg.target);
+    htmx.process(infobox);
+    htmx.trigger("#infobox", "navigation")
+    mapChangeRequired({qid: lsg.qid})
 });
 
 window.history.replaceState({ qid: state.qid }, "", window.location.pathname);

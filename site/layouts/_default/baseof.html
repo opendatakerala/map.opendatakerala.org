@@ -18,6 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
     <style>
         @import url('https://smc.org.in/fonts/gayathri.css');
 
@@ -67,6 +68,25 @@
         #metadata {
             display: none;
         }
+
+        .autocomp {
+			background: #f8f8f8;
+			border-radius: 0 0 5px 5px;
+			border: 1px solid #ccc;
+			border-top: 0;
+			box-shadow: 2px 2px 2px #eee;
+			text-align: left;
+		}
+		.autocomp-item {
+			padding-bottom: 5px;
+			padding: 10px;
+			cursor: pointer;
+		}
+		.autocomp-item:hover,
+		.autocomp-sel {
+			background: #f1f1f1;
+			font-weight: bold;
+		}
     </style>
     {{- partial "gtag.html" . -}}
     {{ block "head" . }}{{ end }}
@@ -85,11 +105,8 @@
 
         {{ if .Store.Get "map-page"}}
         <a class="navbar-brand" href="/">Map Kerala <sub>Alpha</sub></a>
-        <div>
-            <input id="search" list="search-datalist" />
-            <datalist id="search-datalist"></datalist>
-        </div>
-        <div data-mk-key="lsg-title">
+        <input id="search" />
+        <div data-mk-key="lsg-title" id="nav" hx-swap-oob="true">
             {{ if .Parent }}
             <nav>{{- .Params.len }} (<a href="{{.Parent.RelPermalink}}">{{ .Parent.Title }}</a>)</nav>
             {{ end }}
@@ -103,11 +120,12 @@
         <div class="spinner-grow" role="status" style="visibility: hidden;">
             <span class="visually-hidden">Loading...</span>
         </div>
-
-        <wiki-data qid="{{ .Params.qid }}">{{ .Params.qid }}</wiki-data>
-        <wiki-pedia lang="ml" draft="{{ .Params.lml }}"></wiki-pedia>
-        <wiki-pedia lang="en" draft="{{ .Params.len }}"></wiki-pedia>
-        <div class="card" id="wikipedia"></div>
+        <div id="infobox" hx-swap="innerHTML" hx-trigger="navigation" hx-select="#infobox" hx-push-url="true">
+            <wiki-data qid="{{ .Params.qid }}">{{ .Params.qid }}</wiki-data>
+            <wiki-pedia lang="ml" draft="{{ .Params.lml }}"></wiki-pedia>
+            <wiki-pedia lang="en" draft="{{ .Params.len }}"></wiki-pedia>
+            <div class="card" id="wikipedia"></div>
+        </div>
         {{end}}
         {{ partial "footer.html" . }}
     </div>

@@ -1,152 +1,61 @@
-const {
-    expect,
-    available,
-    getOverview,
-    getAllOverview,
-    isValidQid,
-    getGeojson,
-} = require("map-utils");
+const { fetchData } = require("map-utils");
 
-const { isEmptyObject } = require('./utils');
+const { isEmptyObject, startJSONDownload } = require('./utils');
 
-const { map, setBaseLayer, addGeojsonToMap, removeCurrentLayers } = require('./leaflet-manager');
+const { replaceOverlay } = require('./leaflet-manager');
 
 const { wikiBaseGetEntities, fetchWikiPageSummary } = require('./wiki-utils');
 
 import { WikiData } from './components/WikiData';
 import { WikiPedia } from './components/WikiPedia';
-import { setupSearch } from './search';
-
-
-const state = {
-    qid: document.querySelector("[data-mk-key=qid]")?.textContent?.trim() ?? "Q1186",
-    feature: "Boundaries",
-    len: document.querySelector("[data-mk-key=len]")?.textContent?.trim() ?? "Kerala",
-};
-
-const setQid = (qid) => {
-    setQidExceptUrlChange(qid);
-    urlChangeRequired();
-};
-
-const setQidExceptUrlChange = (qid) => {
-    state.qid = qid;
-    const { len, lml, urlpath, district } = getOverview(qid);
-    state.len = len;
-    state.lml = lml;
-    state.district = district;
-    state.urlpath = urlpath;
-    mapChangeRequired();
-    skeletonChangeRequired();
-};
-
-const navigateToLsg = (lsg) => {
-
-}
-
-const setFeature = (feature) => {
-    state.feature = feature;
-    configureButton = document.getElementById("configuration");
-    configureButton.textContent = feature;
-    mapChangeRequired();
-};
-
-const startJSONDownload = (filename, data) => {
-    const string = JSON.stringify(data);
-    const bytes = new TextEncoder().encode(string);
-    const blob = new Blob([bytes], { type: "application/json;charset=utf-8" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = filename;
-    a.click();
-};
-
-const downloadButton = document.querySelector("#download");
-downloadButton.addEventListener("click", () => {
-    startJSONDownload(
-        `${state.len} - ${state.feature}.geojson`,
-        getGeojson(state.qid, state.feature)
-    );
-});
-const disableDownload = () => (downloadButton.disabled = true);
-const enableDownload = () => (downloadButton.disabled = false);
+import { setupSearch, getLsgFromPath } from './search';
 
 const spinner = document.querySelector("[role=status]");
 const showSpinner = () => (spinner.style.visibility = "visible");
 const hideSpinner = () => (spinner.style.visibility = "hidden");
 
-const showUselessWarning = () => alert("Sorry, no data available for that.");
 
-const mapChangeRequired = async ({qid = state.qid, feature = state.feature}) => {
+const mapChangeRequired = async (config) => {
     showSpinner();
-    removeCurrentLayers();
-    disableDownload();
+    const geojson = await fetchData(config.qid)
+    replaceOverlay(geojson);
 
-    await expect(qid, feature);
-    if (!available(qid, feature)) return;
-
-    const geojson = getGeojson(qid, feature);
-
-    const layer = addGeojsonToMap(geojson);
     hideSpinner();
-    if (isEmptyObject(layer.getBounds())) {
-        showUselessWarning();
-    } else {
-        map.flyToBounds(layer.getBounds().pad(0.05));
-        enableDownload();
-    }
 };
-
-const changeAll = (selector, content) =>
-    document
-        ?.querySelectorAll(selector)
-        ?.forEach((el) => (el.textContent = content));
-
-const changeHTML = (selector, content) =>
-    document.querySelectorAll(selector).forEach((el) => (el.innerHTML = content))
-
-const skeletonChangeRequired = () => {
-    changeAll("[data-mk-key=qid]", state.qid);
-    changeAll("[data-mk-key=len]", state.len);
-    changeAll("[data-mk-key=lml]", state.lml);
-    changeAll("[data-mk-key=district]", state.district);
-    changeHTML("[data-mk-key=lsg-title]", `${state.len} (<a href="/${state.district.toLowerCase()}">${state.district}</a>)`)
-    document.querySelector(
-        "#wikidata-link"
-    ).href = `https://www.wikidata.org/wiki/${state.qid}`;
-};
-
-const urlChangeRequired = () => {
-    window.history.pushState({ qid: state.qid }, "", `/${state.urlpath}/`);
-};
-
-
-const featureSelectionButtons = document.querySelectorAll("[data-mk-feature]");
-featureSelectionButtons.forEach((button) => {
-    button.addEventListener("click", (e) => {
-        const feature = e.target.getAttribute("data-mk-feature");
-        setFeature(feature);
-    });
-});
-
-mapChangeRequired();
 
 setupSearch("#search", (lsg) => {
-    const infobox = document.querySelector("#infobox");
-    infobox.setAttribute("hx-get", lsg.target);
-    htmx.process(infobox);
-    htmx.trigger("#infobox", "navigation")
-    mapChangeRequired({qid: lsg.qid})
+    maybeRespond({ lsg: lsg.target });
 });
 
-window.history.replaceState({ qid: state.qid }, "", window.location.pathname);
+const maybeRespond = ({ lsg, ...params }) => {
+    changeURL({ lsg, ...params });
+}
 
-window.addEventListener("popstate", (event) => {
-    setQidExceptUrlChange(event.state.qid);
-});
+const changeURL = ({ lsg, ...params }) => {
+    const config = new URLSearchParams(params);
+    const target = `${lsg}?${config}`
+    history.pushState(undefined, undefined, target);
+    reconfigure(target);
+}
 
-document.querySelector('#switch-to-osm').addEventListener('click', () => setBaseLayer('osm'))
-document.querySelector('#switch-to-tan').addEventListener('click', () => setBaseLayer('tan'))
+
+let currentPath = '';
+
+const reconfigure = async (configString) => {
+    const url = new URL(configString, 'https://map.opendatakerala.org');
+    const newPath = url.pathname;
+    const lsg = await getLsgFromPath(newPath);
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const config = Object.fromEntries(urlSearchParams.entries());
+    const feature = config.feature || "Boundaries"
+    mapChangeRequired({ qid: lsg.qid, feature })
+}
+
+window.addEventListener('popstate', (event) => {
+    reconfigure(location.href);
+})
+
+reconfigure(location.href);
 
 // TODO: Show an alert for
 // This portal is under active development. Features maybe added or removed without

@@ -1,5 +1,3 @@
-import { wikiStore } from "app-state";
-
 const wikiReqHeaders = new Headers({
     Accept: "application/json",
     "Accept-Encoding": "gzip",

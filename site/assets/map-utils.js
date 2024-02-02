@@ -4,8 +4,6 @@ const { QUERIES } = require("constants");
 const { OVERPASS_URL } = require("constants");
 const { fetchJSONWithUrlSearchParams } = require("utils");
 
-const mapDataStore = {};
-
 const getQuery = (qid, feature) => {
     if (feature === "Boundaries")
         return `[out:json] [timeout:500];
@@ -17,41 +15,49 @@ const getQuery = (qid, feature) => {
             out geom;`;
 };
 
-const fetchAndStore = async (qid, feature) => {
-    const query = getQuery(qid, feature);
+/* 
+
+We need something like: 
+`(
+    area["wikidata"="Q4705084"]->.a;
+    (
+     nwr["office"="government"](area.a);
+     nwr["tourism"="hotel"](area.a);
+     nwr["amenity"="school"](area.a);
+    );
+    (._;>;);
+    relation["wikidata"="Q4705084"];
+  );
+  out geom;`
+*/
+
+const getMassQuery = (qid) => {
+    const filters = Object.values(QUERIES).map(v => `            nwr[${v}](area.a)`).join(';\n')
+    return `
+[out:json] [timeout:500];
+(
+    area["wikidata"="${qid}"]->.a;
+    (
+${filters};
+    );
+    (._;>;);
+    relation["wikidata"="${qid}"];
+);
+out geom;`
+}
+
+const fetchData = async (qid, feature) => {
+    const query = getMassQuery(qid);
 
     return fetchJSONWithUrlSearchParams(OVERPASS_URL, { data: query }).then(
         (data) => {
+            console.log(data);
             const geojson = osmtogeojson(data);
-            mapDataStore[`${qid}#${feature}`] = {
-                geojson,
-            };
+            return geojson;
         }
     );
 };
 
-const expect = async (qid, feature) => {
-    if (available(qid, feature)) {
-        return true;
-    } else {
-        return fetchAndStore(qid, feature);
-    }
-};
-
-const available = (qid, feature) =>
-    mapDataStore.hasOwnProperty(`${qid}#${feature}`);
-
-const getGeojson = (qid, feature) => mapDataStore[`${qid}#${feature}`].geojson;
-
-const getOverview = (qid) => mapDataStore.byQid[qid];
-const getAllOverview = () => mapDataStore.byQid;
-const isValidQid = (maybeQid) => mapDataStore.byQid.hasOwnProperty(maybeQid);
-
 module.exports = {
-    expect,
-    available,
-    getOverview,
-    getGeojson,
-    getAllOverview,
-    isValidQid,
+    fetchData
 };

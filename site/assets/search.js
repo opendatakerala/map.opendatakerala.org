@@ -18,6 +18,12 @@ const searchData = fetch("/data.json")
         return results;
     })
 
+export const getLsgFromPath = async (path) => {
+    const data = await searchData;
+    const result = data.filter(l => l.target === path);
+    return result[0]
+}
+
 const fuzzymatch = (target, searchstring) => {
     if (target.includes(searchstring)) return true;
     return false;
@@ -38,7 +44,7 @@ export const setupSearch = (selector, onChange) => {
                     lsg
                 }
             }))
-            return lsg.len
+            return lsg.len;
         },
 
         // If this callback is set, every search item (string or object) is passed to this function and its return

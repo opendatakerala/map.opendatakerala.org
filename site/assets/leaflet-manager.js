@@ -6,16 +6,6 @@ const { KERALA_BOUNDS, MIN_ZOOM } = require("./constants");
 
 const additionalFeatures = [];
 
-const map = L.map("map", {
-    minZoom: MIN_ZOOM,
-    maxBoundsViscosity: 0.9,
-    zoomControl: false,
-}).fitBounds(KERALA_BOUNDS);
-
-L.control.zoom({
-    position: 'topright'
-}).addTo(map);
-
 const osmLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxBounds: KERALA_BOUNDS,
     attribution:
@@ -28,59 +18,48 @@ const tangramLayer = Tangram.leafletLayer({
     attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors'
 });
 
-let baseLayer = 'tan'
-if (baseLayer === 'osm') {
-    osmLayer.addTo(map);
-} else {
-    tangramLayer.addTo(map);
+
+const map = L.map("map", {
+    minZoom: MIN_ZOOM,
+    maxBoundsViscosity: 0.9,
+    zoomControl: false,
+    layers: [osmLayer]
+}).fitBounds(KERALA_BOUNDS);
+
+L.control.zoom({
+    position: 'bottomright'
+}).addTo(map);
+
+
+const baseMaps = {
+    "Stable": osmLayer,
+    "Experimental": tangramLayer
 }
 
 addIndiaBoundaries(map);
 
-const setBaseLayer = (l) => {
-    baseLayer = l;
-    if (l === 'osm') {
-        if (map.hasLayer(tangramLayer)) {
-            tangramLayer.remove()
-        }
-        osmLayer.addTo(map);
-    } else {
-        if (map.hasLayer(osmLayer)) {
-            osmLayer.remove()
-        }
-        tangramLayer.addTo(map);
+let overlays = {};
+
+const layerControl = L.control.layers(baseMaps, overlays).addTo(map)
+
+const replaceOverlay = (geojson) => {
+    Object.values(overlays).forEach(layer => {
+        layerControl.removeLayer(layer);
+        map.removeLayer(layer);
+    });
+    const newLayer = L.geoJSON(geojson, {color: "blue"})
+    overlays = {
+        data: newLayer
     }
-    redrawAdditonalLayers();
+    newLayer.addTo(map);
+    layerControl.addOverlay(newLayer, "data")
+    map.flyToBounds(newLayer.getBounds().pad(0.05));
 }
 
-const redrawAdditonalLayers = () => {
-    const geojsons = additionalFeatures.map(f => f.geojson);
-    removeCurrentLayers();
-    geojsons.forEach(g => addGeojsonToMap(g));
-}
-
-const addGeojsonToMap = (geojson) => {
-    const feature = { geojson };
-    feature.layer = L.geoJSON(geojson, { color: "blue" });
-    if (baseLayer === 'osm') {
-        feature.layer.addTo(map);
-    } else {
-        tangramLayer.scene.setDataSource("dynamic", { type: "GeoJSON", data: geojson });
-    }
-    additionalFeatures.push(feature);
-    return feature.layer;
-}
-
-const removeCurrentLayers = () => {
-    additionalFeatures.forEach(f => {
-        map.removeLayer(f.layer);
-        tangramLayer?.scene?.setDataSource("dynamic", { type: "GeoJSON", data: {} })
-    })
-}
+//         tangramLayer.scene.setDataSource("dynamic", { type: "GeoJSON", data: geojson });
+//         tangramLayer?.scene?.setDataSource("dynamic", { type: "GeoJSON", data: {} })
 
 module.exports = {
     map,
-    setBaseLayer,
-    addGeojsonToMap,
-    removeCurrentLayers
+    replaceOverlay,
 };

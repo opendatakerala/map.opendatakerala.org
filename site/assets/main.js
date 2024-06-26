@@ -1,4 +1,4 @@
-const { fetchData } = require("map-utils");
+const { fetchData, getShapedGeoJSON } = require("map-utils");
 
 const { isEmptyObject, startJSONDownload } = require('./utils');
 
@@ -17,8 +17,7 @@ const hideSpinner = () => (spinner.style.visibility = "hidden");
 
 const mapChangeRequired = async (config) => {
     showSpinner();
-    const geojson = await fetchData(config.qid)
-    replaceOverlay(geojson);
+    replaceOverlay(config.qid);
 
     hideSpinner();
 };

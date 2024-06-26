@@ -73,7 +73,6 @@ const replaceOverlay = (qid) => {
   layerControl.off("panel:selected");
   overlays.forEach((g) => g.layers.forEach((l) => layerControl.removeLayer(l)));
   overlays = getOverlays();
-  console.log(overlays)
   overlays.forEach((l) => layerControl.addOverlayGroup(l));
   layerControl.on("panel:selected", (l) => {
     if (l.overlay) {

@@ -352,7 +352,6 @@ const getInitialLayers = () => {
 const getShapedGeoJSON = (data) => {
   const geoj = osmtogeojson(data);
   const groupedFeatures = Object.groupBy(geoj.features, grouper);
-  console.log(groupedFeatures);
   return Object.entries(groupedFeatures).map(([k, v]) => {
     const skeleton = getSkeletonGeoJSON();
     skeleton.features = v;

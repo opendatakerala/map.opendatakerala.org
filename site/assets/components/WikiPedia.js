@@ -34,7 +34,7 @@ export class WikiPedia extends HTMLElement {
             } else {
                 fetchWikiPageSummary({ lang, title: newValue }).then(data => {
                     this.innerHTML = `<div class="card">
-                        ${data.extract_html} ${this.readMoreLink()}
+                        ${data.extract_html} ${this.readMoreLink(data)}
                     </div>`
                 })
             }

@@ -37,6 +37,10 @@ const changeURL = ({ lsg, ...params }) => {
     reconfigure(target);
 }
 
+const shellChangeRequired = (lsg) => {
+    document.querySelectorAll('[data-mk-key=lsg-title]').forEach(el => el.textContent = lsg.len)
+    document.querySelector('wiki-data').setAttribute('qid', lsg.qid);
+}
 
 let currentPath = '';
 
@@ -48,6 +52,7 @@ const reconfigure = async (configString) => {
     const config = Object.fromEntries(urlSearchParams.entries());
     const feature = config.feature || "Boundaries"
     mapChangeRequired({ qid: lsg.qid, feature })
+    shellChangeRequired(lsg)
 }
 
 window.addEventListener('popstate', (event) => {
@@ -65,10 +70,12 @@ customElements.define('wiki-pedia', WikiPedia)
 
 document.body.addEventListener('wiki-data-loaded', (e) => {
     const { data, qid } = e.detail;
+    console.log(data);
     document.querySelectorAll('wiki-pedia').forEach(n => {
         const lang = n.getAttribute('lang');
         const wikiname = `${lang}wiki`;
         const title = data?.entities?.[qid]?.sitelinks?.[wikiname]?.title
+        console.log(title);
         n.setAttribute("title", title || "");
     })
 });

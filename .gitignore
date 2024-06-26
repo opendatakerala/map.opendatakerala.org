@@ -1,3 +1,4 @@
 site/content/*
 !site/content/*.md
+!site/content/blog
 site/static/data.json

@@ -11,3 +11,6 @@ pluralizeListTitles = false
 
 [outputs]
   page = ["HTML", "JSON"]
+
+[markup.goldmark.renderer]
+  unsafe = true # to have html in md

@@ -54,7 +54,7 @@ const searchInData = (data, term) => {
         if (item.lenl.includes(term)) return 20;
         if (item.lml.includes(term)) return 20;
         const lev = levenshtein(term, item.lenl);
-        if (lev.steps > 0) return item.len.length - lev.steps;
+        if (lev.steps > 0) return lev.similarity;
         return 0;
     })
 }

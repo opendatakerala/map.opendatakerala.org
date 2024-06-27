@@ -47,7 +47,7 @@ let currentPath = '';
 const reconfigure = async (configString) => {
     const url = new URL(configString, 'https://map.opendatakerala.org');
     const newPath = url.pathname;
-    const lsg = await getLsgFromPath(newPath);
+    const lsg = await getLsgFromPath(newPath) || {qid: "Q1186", len: "Kerala"};
     const urlSearchParams = new URLSearchParams(window.location.search);
     const config = Object.fromEntries(urlSearchParams.entries());
     const feature = config.feature || "Boundaries"
@@ -70,12 +70,10 @@ customElements.define('wiki-pedia', WikiPedia)
 
 document.body.addEventListener('wiki-data-loaded', (e) => {
     const { data, qid } = e.detail;
-    console.log(data);
     document.querySelectorAll('wiki-pedia').forEach(n => {
         const lang = n.getAttribute('lang');
         const wikiname = `${lang}wiki`;
         const title = data?.entities?.[qid]?.sitelinks?.[wikiname]?.title
-        console.log(title);
         n.setAttribute("title", title || "");
     })
 });

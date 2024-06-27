@@ -2,6 +2,7 @@
   "name": "mapkerala",
   "dependencies": {
     "@knadh/autocomp": "^1.1.0",
+    "damerau-levenshtein": "^1.0.8",
     "leaflet": "^1.9.4",
     "osmtogeojson": "^3.0.0-beta.5",
     "tangram": "^0.21.1"

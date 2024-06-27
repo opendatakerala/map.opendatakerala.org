@@ -3,6 +3,8 @@ title: "Version 2024"
 layout: 'meta'
 ---
 
+# Version 2024
+
 With support from [HOT Booster Grant](https://wiki.openstreetmap.org/wiki/Kerala/Grants/HOTBoosterGrant2023/Proposal/Improving_Map_Kerala_Portal_(2023)) we are now releasing a new version of Map Kerala.
 
 This version includes some exciting experiments.

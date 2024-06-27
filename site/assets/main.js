@@ -11,7 +11,7 @@ import { WikiPedia } from './components/WikiPedia';
 import { setupSearch, getLsgFromPath } from './search';
 
 const mapChangeRequired = async (config) => {
-    return replaceOverlay(config.qid);
+    return replaceOverlay(config);
 };
 
 setupSearch("#search", (lsg) => {
@@ -43,7 +43,7 @@ const reconfigure = async (configString) => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     const config = Object.fromEntries(urlSearchParams.entries());
     const feature = config.feature || "Boundaries"
-    mapChangeRequired({ qid: lsg.qid, feature })
+    mapChangeRequired({ qid: lsg.qid, feature, lsg })
     shellChangeRequired(lsg)
 
 }

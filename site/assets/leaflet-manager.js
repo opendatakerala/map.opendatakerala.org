@@ -56,21 +56,35 @@ let baseLayers = [
 
 addIndiaBoundaries(map);
 
-let layerControl = new L.Control.PanelLayers(baseLayers, undefined, {collapsed: true});
+let layerControl = new L.Control.PanelLayers(baseLayers, undefined, {collapsed: true, compact: true, compactOffset: 50});
 layerControl.addTo(map);
 
 let overlays = [];
 
+const availableData = {};
+
 const loadLayer = (qid, l) => {
     return fetchData(qid, l.name).then((d) => osmtogeojson(d)).then((d) => {
+      availableData[l.name] = d;
       l.layer.addData(d);
       map.flyToBounds(l.layer.getBounds().pad(0.05));
       return l.layer;
     });
 }
 
-const replaceOverlay = async (qid) => {
+const startJSONDownload = (filename, data) => {
+  const string = JSON.stringify(data);
+  const bytes = new TextEncoder().encode(string);
+  const blob = new Blob([bytes], { type: "application/json;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+};
+
+const replaceOverlay = async ({qid, lsg}) => {
   layerControl.off("panel:selected");
+  layerControl.off("panel:download");
   overlays.forEach((g) => g.layers.forEach((l) => layerControl.removeLayer(l)));
   overlays = getOverlays();
   overlays.forEach((l) => layerControl.addOverlayGroup(l));
@@ -79,6 +93,12 @@ const replaceOverlay = async (qid) => {
         loadLayer(qid, l)
     }
   });
+  layerControl.on("panel:download", (l) => {
+    startJSONDownload(
+      `${lsg.len} - ${l.name}.geojson`,
+      availableData[l.name]
+    );
+  })
   layerControl.check(overlays[0].layers[0])
 };
 

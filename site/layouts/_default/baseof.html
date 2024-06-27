@@ -102,6 +102,23 @@
         #search:not(:focus) {
             color: lightgray;
         }
+
+        .leaflet-panel-layers-download {
+            display:inline-block;
+            color:#444;
+            border:1px solid #CCC;
+            background:#DDD;
+            box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
+            cursor:pointer;
+            vertical-align:middle;
+            max-width: 100px;
+            padding: 5px;
+            text-align: center;
+        }
+        .leaflet-panel-layers-download:active {
+            color:red;
+            box-shadow: 0 0 5px -1px rgba(0,0,0,0.6);
+        }
     </style>
     {{- partial "gtag.html" . -}}
     {{ block "head" . }}{{ end }}

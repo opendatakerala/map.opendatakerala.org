@@ -66,7 +66,9 @@ const initializeLeafletPanelLayers = (L) => {
     
             // update group checkboxes
             this._onInputClick();
-    
+
+            this._addDownloadOption();
+
             return this._container;
         },
     
@@ -387,6 +389,23 @@ const initializeLeafletPanelLayers = (L) => {
             }
         },
     
+        _addDownloadOption: function() {
+            this._downloadButton.innerText = "Download";
+            this._downloadButton.addEventListener("click", (e) => {
+                const inputs = this._form.getElementsByClassName(this.className + '-selector');
+
+                // all layer checkboxes
+                for (i = 0; i < inputs.length; i++) {
+                    input = inputs[i];
+                    if (input.value == 'group') { continue; }
+                    if (!input.checked) { continue; }
+                    obj = this._getLayer(input.value);
+                    if (!obj.overlay) {continue;}
+                    this.fire("panel:download", obj)
+                }
+            })
+        },
+
         _onInputClick: function () {
             var i, input, obj, key, g,
                 inputs = this._form.getElementsByClassName(this.className + '-selector'),
@@ -506,6 +525,7 @@ const initializeLeafletPanelLayers = (L) => {
             this._baseLayersList = L.DomUtil.create('div', this.className + '-base', this._form);
             this._separator = L.DomUtil.create('div', this.className + '-separator', this._form);
             this._overlaysList = L.DomUtil.create('div', this.className + '-overlays', this._form);
+            this._downloadButton = L.DomUtil.create('div', this.className + '-download', this._form);
     
             /* maybe useless
             if (!this.options.compact)

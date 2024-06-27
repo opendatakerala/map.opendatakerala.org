@@ -36,7 +36,9 @@
             flex-direction: column-reverse;
         }
 
-        #control-panel {}
+        #control-panel {
+            padding-top: 10px;
+        }
 
         @media (min-width: 600px) {
             #main-container {
@@ -69,6 +71,15 @@
             display: none;
         }
 
+        #nav {
+            font-size: larger;
+            margin: 5px;
+        }
+
+        #infobox, #search, .navbar-brand {
+            margin: 5px;
+        }
+
         .autocomp {
 			background: #f8f8f8;
 			border-radius: 0 0 5px 5px;
@@ -88,6 +99,9 @@
 			background: #f1f1f1;
 			font-weight: bold;
 		}
+        #search:not(:focus) {
+            color: lightgray;
+        }
     </style>
     {{- partial "gtag.html" . -}}
     {{ block "head" . }}{{ end }}
@@ -111,9 +125,6 @@
             {{ if .Parent }}
             <nav>{{- .Params.len }} (<a href="{{.Parent.RelPermalink}}">{{ .Parent.Title }}</a>)</nav>
             {{ end }}
-        </div>
-        <div class="spinner-grow" role="status" style="visibility: hidden;">
-            <span class="visually-hidden">Loading...</span>
         </div>
         <div id="infobox">
             <wiki-data qid="{{ .Params.qid }}">{{ .Params.qid }}</wiki-data>

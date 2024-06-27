@@ -69,7 +69,7 @@ const loadLayer = (qid, l) => {
     });
 }
 
-const replaceOverlay = (qid) => {
+const replaceOverlay = async (qid) => {
   layerControl.off("panel:selected");
   overlays.forEach((g) => g.layers.forEach((l) => layerControl.removeLayer(l)));
   overlays = getOverlays();

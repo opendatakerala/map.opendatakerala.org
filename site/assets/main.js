@@ -10,16 +10,8 @@ import { WikiData } from './components/WikiData';
 import { WikiPedia } from './components/WikiPedia';
 import { setupSearch, getLsgFromPath } from './search';
 
-const spinner = document.querySelector("[role=status]");
-const showSpinner = () => (spinner.style.visibility = "visible");
-const hideSpinner = () => (spinner.style.visibility = "hidden");
-
-
 const mapChangeRequired = async (config) => {
-    showSpinner();
-    replaceOverlay(config.qid);
-
-    hideSpinner();
+    return replaceOverlay(config.qid);
 };
 
 setupSearch("#search", (lsg) => {
@@ -37,7 +29,7 @@ const changeURL = ({ lsg, ...params }) => {
     reconfigure(target);
 }
 
-const shellChangeRequired = (lsg) => {
+const shellChangeRequired = async (lsg) => {
     document.querySelectorAll('[data-mk-key=lsg-title]').forEach(el => el.textContent = lsg.len)
     document.querySelector('wiki-data').setAttribute('qid', lsg.qid);
 }
@@ -53,6 +45,7 @@ const reconfigure = async (configString) => {
     const feature = config.feature || "Boundaries"
     mapChangeRequired({ qid: lsg.qid, feature })
     shellChangeRequired(lsg)
+
 }
 
 window.addEventListener('popstate', (event) => {

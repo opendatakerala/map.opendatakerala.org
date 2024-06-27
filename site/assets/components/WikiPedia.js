@@ -1,10 +1,15 @@
 import { fetchWikiPageSummary } from '../wiki-utils';
 
+
+const spinnerHTML = `<div class="spinner-grow" role="status">
+<span class="visually-hidden">Loading...</span>
+</div>`
 export class WikiPedia extends HTMLElement {
     static observedAttributes = ["title"];
     constructor() {
         super();
         const lang = this.getAttribute('lang');
+        this.innerHTML = spinnerHTML
     }
     readMoreLink(data) {
         const messages = {
@@ -32,6 +37,7 @@ export class WikiPedia extends HTMLElement {
             if (!newValue) {
                 this.innerHTML = `<div class="card">${this.createWikiLink()}</div>`
             } else {
+                this.innerHTML = spinnerHTML;
                 fetchWikiPageSummary({ lang, title: newValue }).then(data => {
                     this.innerHTML = `<div class="card">
                         ${data.extract_html} ${this.readMoreLink(data)}

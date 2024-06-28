@@ -140,6 +140,17 @@ const CONFIGURATION = {
         fillOpacity: 0,
       },
     },
+    "Ward Boundary": {
+      q: `"admin_level"="10"`,
+      id: "wards",
+      active: true,
+      style: {
+        color: "#222",
+        weight: 2,
+        dashArray: "4 1 4",
+        fillOpacity: 0,
+      },
+  },
     "Government Offices": {
       q: `"admin_level"="10"`,
       id: "wards",

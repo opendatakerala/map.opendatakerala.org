@@ -6,6 +6,7 @@ const KERALA_BOUNDS = [
 const MIN_ZOOM = 7;
 
 const QUERIES = {
+    "Ward Boundary": '"admin_level"="10"',
     "Government Offices": `"office"="government"`,
     Hospitals: `"amenity"="hospital"`,
     Power: `"power"`,

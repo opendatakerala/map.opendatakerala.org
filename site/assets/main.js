@@ -70,3 +70,13 @@ document.body.addEventListener('wiki-data-loaded', (e) => {
         n.setAttribute("title", title || "");
     })
 });
+
+
+const driverObj = driver.js.driver();
+driverObj.highlight({
+    element: "#search",
+    popover: {
+        title: "Find your LSG",
+        description: "Enter the name of the panchayat/municipality/corporation you are searching for"
+    }
+})

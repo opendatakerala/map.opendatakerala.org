@@ -18,6 +18,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
     <style>
         @import url('https://smc.org.in/fonts/gayathri.css');
 
@@ -137,7 +139,7 @@
 
         {{ if .Store.Get "map-page"}}
         <a class="navbar-brand" href="/">Map Kerala <sub>Alpha</sub></a>
-        <input id="search" />
+        <input id="search" placeholder="Search..." autofocus/>
         <div data-mk-key="lsg-title" id="nav">
             {{ if .Parent }}
             <nav>{{- .Params.len }} (<a href="{{.Parent.RelPermalink}}">{{ .Parent.Title }}</a>)</nav>

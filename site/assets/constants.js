@@ -38,6 +38,8 @@ const QUERIES = {
     Sports: `"sport"`,
     "Drinking Water": `"amenity"="drinking_water"`,
     "Free WiFi": `"wifi"`,
+    Hospitals: `"amenity"="hospital"`,
+    Clinics: `"amenity"="clinic"`,
 };
 
 module.exports = {

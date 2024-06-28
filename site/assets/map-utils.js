@@ -72,61 +72,6 @@ const getSkeletonGeoJSON = () => {
   });
 };
 
-const LAYER_GROUP_CONFIG = [
-  ["Political", [
-    "Boundaries",
-    "Government Offices",
-  ]],
-  ["Emergency", [
-    "Hospitals",
-    "Power",
-    "Police Stations",
-    "Fire Stations",
-  ]],
-  ["Nature", [
-    "Waterways/Rivers",
-    "Ponds",
-    "Farmlands",
-  ]],
-  ["Public Transport", [
-    "Roads",
-    "Rails",
-    "Taxi",
-    "Petrol Pumps",
-  ]],
-  ["Tourism", [
-    "Hotels",
-    "Restaurants",
-    "Parking",
-    "Cinemas",
-    "Toilets",
-  ]],
-  ["Religous", [
-    "Religion",
-  ]],
-  ["Education", [
-    "Schools",
-    "Colleges",
-    "Kindergartens",
-  ]],
-  ["Recreation", [
-    "Community centres",
-    "Libraries",
-  ]],
-  ["Amenities", [
-    "Ration shops",
-    "Banks",
-    "ATMs",
-    "Post Offices",
-    "Petrol Pumps",
-    "Shops",
-    "Sports",
-    "Drinking Water",
-    "Free WiFi",
-    "Toilets",
-  ]],
-];
-
 const CONFIGURATION = {
   Political: {
     "Boundaries": {
@@ -187,6 +132,11 @@ const CONFIGURATION = {
         weight: 10,
       },
     },
+    Power: {
+      q: `"power"`,
+      id: "power_line",
+    },
+    
   },
   Nature: {
     "Waterways/Rivers": {
@@ -199,7 +149,7 @@ const CONFIGURATION = {
     },
     "Farmlands": {
         q: `"landuse"="farmland"`,
-        id: "farmland_all",
+        id: "farmland_rice",
         style: {
           color: "green",
         },
@@ -226,15 +176,62 @@ const CONFIGURATION = {
       },
     },
     "Petrol Pumps": {
-      q: ``,
-      id: "",
+      q: `"amenity"="fuel"`,
+      id: "petrol_pump",
     },
     Taxi: {
-      q: ``,
-      id: "",
+      q: `"amenity"="taxi"`,
+      id: "taxi",
     },
   },
-  
+  Tourism: {
+    Hotels: {
+      id: "hotels"
+    },
+    Restaurants: {
+      id: "restaurants"
+    },
+    Parking: {
+      id: "parking"
+    },
+    Cinemas: {
+      id: "cinemas"
+    },
+    Toilets: {
+      id: "toilets"
+    },
+  },
+  Religious: {
+    "Place of Worship": {
+      q: `"amenity"="place_of_worship"`,
+      id: "place_of_worship",
+    },
+  },
+  Education: {
+    Kindergartens: {
+      q: `"amenity"="kindergarten"`,
+      id: "kindergarten",
+      style: {
+        color: "olive",
+        weight: 10,
+      },
+    },
+    Schools: {
+      q: `"amenity"="school"`,
+      id: "school",
+      style: {
+        color: "olive",
+        weight: 10,
+      },
+    },
+    Colleges: {
+      q: `"amenity"~"college|university"`,
+      id: "college",
+      style: {
+        color: "olive",
+      },
+    },
+  },
   Health: {
     PHCs: {
       q: ``,
@@ -259,66 +256,8 @@ const CONFIGURATION = {
       id: "",
     },
   },
-  Education: {
-    Anganwadi: {
-      q: `"amenity"="kindergarten"`,
-      id: "kindergarten",
-      style: {
-        color: "olive",
-        weight: 10,
-      },
-    },
-    School: {
-      q: `"amenity"="school"`,
-      id: "school",
-      style: {
-        color: "olive",
-        weight: 10,
-      },
-    },
-    College: {
-      q: `"amenity"~"college|university"`,
-      id: "college",
-      style: {
-        color: "olive",
-      },
-    },
-  },
-  Bank: {
-    Bank: {
-      q: `"amenity"="bank"`,
-      id: "bank",
-    },
-    ATM: {
-      q: `"amenity"="atm"`,
-      id: "atm",
-    },
-    "Post Office": {
-      q: `"amenity"="post_office"`,
-      id: "post_office",
-    },
-  },
-  Religion: {
-    "Place of Worship": {
-      q: `"amenity"="place_of_worship"`,
-      id: "place_of_worship",
-    },
-  },
-  Power: {
-    Line: {
-      q: `"power"`,
-      id: "power_line",
-    },
-    Transformer: {
-      q: `"power"="transformer"`,
-      id: "power_transformer",
-    },
-  },
-  Other: {
-    Drainage: {
-      id: "drainage",
-    },
-    "Community Centres": {
+  Recreation: {
+    "Community centres": {
       q: `"amenity"="community_centre"`,
       id: "community_centre",
     },
@@ -326,13 +265,23 @@ const CONFIGURATION = {
       q: `"amenity"="library"`,
       id: "library",
     },
+  },
+  Amenities: {
+    Banks: {
+      q: `"amenity"="bank"`,
+      id: "bank",
+    },
+    ATMs: {
+      q: `"amenity"="atm"`,
+      id: "atm",
+    },
+    "Post Offices": {
+      q: `"amenity"="post_office"`,
+      id: "post_office",
+    },
     "Ration Shops": {
       q: `"name"="Ration shop"`,
       id: "ration_shop",
-    },
-    "Milk Cooperatives": {
-      q: `"shop"="diary"`,
-      id: "milk_cooperatives",
     },
     Toilets: {
       q: `"amenity"="toilets"`,
@@ -350,7 +299,7 @@ const CONFIGURATION = {
       q: `"sport"`,
       id: "sport",
     },
-    "Petrol pump": {
+    "Petrol Pumps": {
       q: `"amenity"="fuel"`,
       id: "petrol_pump",
     },

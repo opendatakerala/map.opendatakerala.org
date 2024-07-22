@@ -80,3 +80,6 @@ driverObj.highlight({
         description: "Enter the name of the panchayat/municipality/corporation you are searching for"
     }
 })
+
+document.getElementById("search").addEventListener('click', (e) => driverObj.destroy())
+setTimeout(() => driverObj.destroy(), 10000)

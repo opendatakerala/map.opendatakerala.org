@@ -56,7 +56,7 @@ let baseLayers = [
 
 addIndiaBoundaries(map);
 
-let layerControl = new L.Control.PanelLayers(baseLayers, undefined, {collapsed: true, compact: true, compactOffset: 50});
+let layerControl = new L.Control.PanelLayers(baseLayers, undefined, {collapsed: false, compact: true, compactOffset: 50});
 layerControl.addTo(map);
 
 let overlays = [];

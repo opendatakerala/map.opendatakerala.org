@@ -483,6 +483,39 @@ const initializeLeafletPanelLayers = (L) => {
     
             this._refocusOnMap();
         },
+
+        _reconfigureCollapseBehaviour: function () {
+            if (this.options.collapsed) {
+                L.DomUtil.removeClass(this._pinnedButton, 'active')
+    
+                if (L.Browser.android)
+                    L.DomEvent
+                        .on(this._container, 'click', this._expand, this);
+                else {
+                    L.DomEvent
+                        .on(this._container, 'mouseenter', this._expand, this)
+                        .on(this._container, 'mouseleave', this._collapse, this);
+                }
+    
+                this._map.on('click', this._collapse, this);
+    
+            } else {
+                L.DomUtil.addClass(this._pinnedButton, 'active')
+                this._expand();
+
+                if (L.Browser.android)
+                    L.DomEvent
+                        .off(this._container, 'click', this._expand, this);
+                else {
+                    L.DomEvent
+                        .off(this._container, 'mouseenter', this._expand, this)
+                        .off(this._container, 'mouseleave', this._collapse, this);
+                }
+    
+                this._map.off('click', this._collapse, this);
+            }
+    
+        },
     
     
         _initLayout: function () {
@@ -500,28 +533,19 @@ const initializeLeafletPanelLayers = (L) => {
     
             if (this.options.className)
                 L.DomUtil.addClass(container, this.options.className);
+
+            this._pinnedButton = L.DomUtil.create('button', this.className + '-pin', container);
+            this._pinnedButton.innerHTML = '📌';
+            this._pinnedButton.addEventListener('click', (e) => {
+                this.options.collapsed = !this.options.collapsed;
+                this._reconfigureCollapseBehaviour();
+            })
     
             this._section = this._form = L.DomUtil.create('form', this.className + '-list');
     
             this._updateHeight();
     
-            if (this.options.collapsed) {
-    
-                if (L.Browser.android)
-                    L.DomEvent
-                        .on(container, 'click', this._expand, this);
-                else {
-                    L.DomEvent
-                        .on(container, 'mouseenter', this._expand, this)
-                        .on(container, 'mouseleave', this._collapse, this);
-                }
-    
-                this._map.on('click', this._collapse, this);
-    
-            } else {
-                this._expand();
-            }
-    
+            this._reconfigureCollapseBehaviour();
             this._baseLayersList = L.DomUtil.create('div', this.className + '-base', this._form);
             this._separator = L.DomUtil.create('div', this.className + '-separator', this._form);
             this._overlaysList = L.DomUtil.create('div', this.className + '-overlays', this._form);

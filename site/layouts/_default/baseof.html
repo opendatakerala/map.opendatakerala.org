@@ -123,6 +123,16 @@
             color:red;
             box-shadow: 0 0 5px -1px rgba(0,0,0,0.6);
         }
+
+        button.leaflet-panel-layers-pin {
+            opacity: 70%;
+            box-shadow: 2px 0px 0px gray;
+        }
+
+        button.leaflet-panel-layers-pin.active {
+            opacity: 100%;
+            box-shadow: 0px 0px 0px gray;
+        }
     </style>
     {{- partial "gtag.html" . -}}
     {{ block "head" . }}{{ end }}

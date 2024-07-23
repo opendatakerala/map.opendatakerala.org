@@ -82,4 +82,5 @@ driverObj.highlight({
 })
 
 document.getElementById("search").addEventListener('click', (e) => driverObj.destroy())
+document.getElementById("search").addEventListener('input', (e) => driverObj.destroy())
 setTimeout(() => driverObj.destroy(), 10000)

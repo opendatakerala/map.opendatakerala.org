@@ -43,6 +43,6 @@ Towards enabling localized labels, we've added experimental support for [Tangram
 
 We now use WebComponents for updating Wikidata and Wikipedia cards.
 
-And finally, we are now <a href="https://github.com/opendatakerala/map-kerala">open source!
+And finally, we are now <a href="https://github.com/opendatakerala/map.opendatakerala.org">open source!
 
 <img src="https://lh7-us.googleusercontent.com/slidesz/AGV_vUeuMmivA-gK1k_7wsrRCw_bXSzuw7cHo1aKOVdI13Vc3FIpEj7wgL0qdsmOHTVWbwb71WJfdcu2kCIrf2wOc1udJoF3yfK__h0YLA27RT5YlsN-IcIqenGT5P1oksWinAO7rUfG6IBrYp5kXPCfC2iofuIYfqf0=s2048?key=LBgx0i0A8r1gBsNdQ05XHQ" width="90%"/></a>

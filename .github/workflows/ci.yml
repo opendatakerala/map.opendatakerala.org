@@ -52,8 +52,6 @@ jobs:
           cache-dependency-path: site/package-lock.json
       - name: install npm modules
         run: npm --prefix ./site install
-      - name: generate site
-        run: hugo -s site
       - name: Build with Hugo
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
@@ -61,6 +59,7 @@ jobs:
           TZ: Asia/Kolkata
         run: |
           hugo \
+            -s site \
             --gc \
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/"

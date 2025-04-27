@@ -15,6 +15,7 @@ const QUERIES = {
     "Waterways/Rivers": `"waterway"`,
     Ponds: `"water"="pond"`,
     Farmlands: `"landuse"="farmland"`,
+    Quarries: `"landuse"="quarry"`,
     Roads: `"highway"`,
     Rails: `"railway"`,
     Taxi: `"amenity"="taxi"`,

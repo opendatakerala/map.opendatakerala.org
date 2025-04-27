@@ -155,6 +155,15 @@ const CONFIGURATION = {
         },
       },
   },
+  "Land Use": {
+    "Quarries": {
+      q: `"landuse"="quarry"`,
+      id: "quarry",
+      style: {
+        color: "red"
+      }
+    },
+  },
   "Public Transport": {
     Rails: {
       q: `"railway"`,
